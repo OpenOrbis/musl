@@ -49,21 +49,12 @@ void *__expand_heap(size_t *pn)
 	n += -n & PAGE_SIZE-1;
 
 	if (!brk) {
-#ifndef PS4
 		brk = __syscall(SYS_brk, 0);
-#else
-		brk = __syscall(SYS_sbrk, 0);
-#endif
 		brk += -brk & PAGE_SIZE-1;
 	}
 
-#ifndef PS4
-	if (n < SIZE_MAX-brk && !traverses_stack_p(brk, brk+n)
-	    && __syscall(SYS_brk, brk+n)==brk+n) {
-#else
 	if (n < SIZE_MAX-brk && !traverses_stack_p(brk, brk+n)
 	    && __syscall(SYS_sbrk, brk+n)==brk+n) {
-#endif
 		*pn = n;
 		brk += n;
 		return (void *)(brk-n);

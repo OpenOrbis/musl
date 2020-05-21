@@ -64,11 +64,7 @@ static void cancel_handler(int sig, siginfo_t *si, void *ctx)
 		return;
 	}
 
-#ifndef PS4
 	__syscall(SYS_tkill, self->tid, SIGCANCEL);
-#else
-	__syscall(SYS_thr_kill, self->tid, SIGCANCEL);
-#endif
 }
 
 void __testcancel()

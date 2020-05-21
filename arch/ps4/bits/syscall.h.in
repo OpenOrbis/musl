@@ -390,3 +390,30 @@
 #define	__NR_rctl_add_rule	528
 #define	__NR_rctl_remove_rule	529
 #define	__NR_posix_fallocate	530
+
+// Aliases for linux -> BSD
+#define __NR_rt_sigqueueinfo	__NR_sigqueue
+#define __NR_rt_sigaction	__NR_sigaction
+#define __NR_rt_sigpending	__NR_sigpending
+#define __NR_rt_sigsuspend	__NR_sigsuspend
+#define __NR_rt_sigprocmask	__NR_sigprocmask
+#define __NR_rt_sigtimedwait 	__NR_sigtimedwait
+#define __NR_set_tid_address	__NR_getpid
+#define __NR_fallocate	__NR_posix_fallocate
+#define __NR_brk	__NR_sbrk
+#define __NR_mq_notify	__NR_kmq_notify
+#define __NR_mq_open	__NR_kmq_open
+#define __NR_mq_getsetattr	__NR_kmq_setattr
+#define __NR_mq_timedreceive	__NR_kmq_timedreceive
+#define __NR_mq_timedsend	__NR_kmq_timedsend
+#define __NR_mq_unlink	__NR_kmq_unlink
+#define __NR_gettid	__NR_getpid
+#define __NR_tkill	__NR_thr_kill
+#define __NR_timer_delete	__NR_ktimer_delete
+#define __NR_timer_create	__NR_ktimer_create
+#define __NR_timer_getoverrun	__NR_ktimer_getoverrun
+#define __NR_timer_gettime	__NR_ktimer_gettime
+#define __NR_timer_settime	__NR_ktimer_settime
+#define __NR_times	__NR_lutimes
+#define __NR_getcwd	__NR___getcwd
+#define __NR_exit_group __NR_exit

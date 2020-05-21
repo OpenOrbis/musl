@@ -24,9 +24,5 @@ int timer_gettime(timer_t t, struct itimerspec *val)
 	}
 	return __syscall_ret(r);
 #endif
-#ifndef PS4
 	return syscall(SYS_timer_gettime, t, val);
-#else
-	return syscall(SYS_ktimer_gettime, t, val);
-#endif
 }

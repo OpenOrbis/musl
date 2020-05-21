@@ -694,4 +694,3 @@ int vfprintf(FILE *restrict f, const char *restrict fmt, va_list ap)
 	va_end(ap2);
 	return ret;
 }
-

@@ -94,13 +94,8 @@ int timer_create(clockid_t clk, struct sigevent *restrict evp, timer_t *restrict
 			ksev.sigev_tid = 0;
 			ksevp = &ksev;
 		}
-#ifndef PS4
 		if (syscall(SYS_timer_create, clk, ksevp, &timerid) < 0)
 			return -1;
-#else
-		if (syscall(SYS_ktimer_create, clk, ksevp, &timerid) < 0)
-			return -1;
-#endif
 		*res = (void *)(intptr_t)timerid;
 		break;
 	case SIGEV_THREAD:
@@ -114,11 +109,7 @@ int timer_create(clockid_t clk, struct sigevent *restrict evp, timer_t *restrict
 		args.sev = evp;
 
 		__block_app_sigs(&set);
-#ifndef PS4
 		__syscall(SYS_rt_sigprocmask, SIG_BLOCK, SIGTIMER_SET, 0, _NSIG/8);
-#else
-		__syscall(SYS_sigprocmask, SIG_BLOCK, SIGTIMER_SET, 0, _NSIG/8);
-#endif
 		r = pthread_create(&td, &attr, start, &args);
 		__restore_sigs(&set);
 		if (r) {
@@ -130,13 +121,8 @@ int timer_create(clockid_t clk, struct sigevent *restrict evp, timer_t *restrict
 		ksev.sigev_signo = SIGTIMER;
 		ksev.sigev_notify = 4; /* SIGEV_THREAD_ID */
 		ksev.sigev_tid = td->tid;
-#ifndef PS4
 		if (syscall(SYS_timer_create, clk, &ksev, &timerid) < 0)
 			timerid = -1;
-#else
-		if (syscall(SYS_ktimer_create, clk, &ksev, &timerid) < 0)
-			timerid = -1;
-#endif
 		td->timer_id = timerid;
 		pthread_barrier_wait(&args.b);
 		if (timerid < 0) return -1;

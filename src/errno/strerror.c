@@ -36,7 +36,11 @@ char *__strerror_l(int e, locale_t loc)
 #endif
 	if (e >= sizeof errmsgidx / sizeof *errmsgidx) e = 0;
 	s = (char *)&errmsgstr + errmsgidx[e];
+#ifndef PS4
+	return (char *)LCTRANS(s, LC_MESSAGES, loc);
+#else
 	return (char *)s;
+#endif
 }
 
 char *strerror(int e)

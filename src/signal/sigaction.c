@@ -68,11 +68,7 @@ int __libc_sigaction(int sig, const struct sigaction *restrict sa, struct sigact
 		ksa.restorer = (sa->sa_flags & SA_SIGINFO) ? __restore_rt : __restore;
 		memcpy(&ksa.mask, &sa->sa_mask, _NSIG/8);
 	}
-#ifndef PS4
 	int r = __syscall(SYS_rt_sigaction, sig, sa?&ksa:0, old?&ksa_old:0, _NSIG/8);
-#else
-	int r = __syscall(SYS_sigaction, sig, sa?&ksa:0, old?&ksa_old:0, _NSIG/8);
-#endif
 	if (sig == SIGABRT && sa && sa->sa_handler != SIG_DFL) {
 		UNLOCK(__abort_lock);
 		__restore_sigs(&set);

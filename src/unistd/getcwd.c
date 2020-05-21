@@ -14,11 +14,7 @@ char *getcwd(char *buf, size_t size)
 		errno = EINVAL;
 		return 0;
 	}
-#ifndef PS4
 	long ret = syscall(SYS_getcwd, buf, size);
-#else
-	long ret = syscall(SYS___getcwd, buf, size);
-#endif
 	if (ret < 0)
 		return 0;
 	if (ret == 0 || buf[0] != '/') {

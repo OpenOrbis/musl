@@ -10,6 +10,7 @@
 
 static int __futex4_cp(volatile void *addr, int op, int val, const struct timespec *to)
 {
+#ifndef PS4
 	int r;
 #ifdef SYS_futex_time64
 	time_t s = to ? to->tv_sec : 0;
@@ -24,6 +25,9 @@ static int __futex4_cp(volatile void *addr, int op, int val, const struct timesp
 	r = __syscall_cp(SYS_futex, addr, op, val, to);
 	if (r != -ENOSYS) return r;
 	return __syscall_cp(SYS_futex, addr, op & ~FUTEX_PRIVATE, val, to);
+#else
+	return -1;
+#endif
 }
 
 static volatile int dummy = 0;
@@ -32,6 +36,7 @@ weak_alias(dummy, __eintr_valid_flag);
 int __timedwait_cp(volatile int *addr, int val,
 	clockid_t clk, const struct timespec *at, int priv)
 {
+#ifndef PS4
 	int r;
 	struct timespec to, *top=0;
 
@@ -58,6 +63,9 @@ int __timedwait_cp(volatile int *addr, int val,
 	if (r == EINTR && !__eintr_valid_flag) r = 0;
 
 	return r;
+#else
+	return -1;
+#endif
 }
 
 int __timedwait(volatile int *addr, int val,

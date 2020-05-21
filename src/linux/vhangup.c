@@ -4,5 +4,9 @@
 
 int vhangup(void)
 {
+#ifndef PS4
 	return syscall(SYS_vhangup);
+#else
+	return -1;
+#endif
 }

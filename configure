@@ -220,6 +220,7 @@ trap 'rm "$tmpc"' EXIT INT QUIT TERM HUP
 #
 test "$target" && \
 test "$target" != "$build" && \
+test "$target" != "x86_64-scei-ps4" && \
 test -z "$CROSS_COMPILE" && \
 CROSS_COMPILE="$target-"
 
@@ -314,6 +315,7 @@ arm*) ARCH=arm ;;
 aarch64*) ARCH=aarch64 ;;
 i?86-nt32*) ARCH=nt32 ;;
 i?86*) ARCH=i386 ;;
+x86_64-scei-ps4*) ARCH=ps4 ;;
 x86_64-x32*|x32*|x86_64*x32) ARCH=x32 ;;
 x86_64-nt64*) ARCH=nt64 ;;
 x86_64*) ARCH=x86_64 ;;
@@ -590,7 +592,7 @@ CFLAGS_AUTO="$CFLAGS_AUTO -DBROKEN_EBX_ASM"
 fi
 fi
 
-if test "$ARCH" = "x86_64" ; then
+if test "$ARCH" = "x86_64" || test "$ARCH" = "ps4" ; then
 trycppif __ILP32__ "$t" && ARCH=x32
 fi
 

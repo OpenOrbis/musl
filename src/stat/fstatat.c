@@ -35,6 +35,7 @@ struct statx {
 
 static int fstatat_statx(int fd, const char *restrict path, struct stat *restrict st, int flag)
 {
+#ifndef PS4
 	struct statx stx;
 
 	int ret = __syscall(SYS_statx, fd, path, flag, 0x7ff, &stx);
@@ -67,6 +68,9 @@ static int fstatat_statx(int fd, const char *restrict path, struct stat *restric
 #endif
 	};
 	return 0;
+#else
+	return -1;
+#endif
 }
 
 static int fstatat_kstat(int fd, const char *restrict path, struct stat *restrict st, int flag)

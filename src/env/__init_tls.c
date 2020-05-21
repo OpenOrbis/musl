@@ -19,7 +19,11 @@ int __init_tp(void *p)
 	if (r < 0) return -1;
 	if (!r) libc.can_do_threads = 1;
 	td->detach_state = DT_JOINABLE;
+#ifdef PS4
+	td->tid = __syscall(SYS_getpid);
+#else
 	td->tid = __syscall(SYS_set_tid_address, &__thread_list_lock);
+#endif
 	td->locale = &libc.global_locale;
 	td->robust_list.head = &td->robust_list.head;
 	td->sysinfo = __sysinfo;

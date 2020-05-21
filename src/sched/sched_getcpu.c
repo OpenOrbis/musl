@@ -24,6 +24,7 @@ static void *volatile vdso_func = (void *)getcpu_init;
 
 int sched_getcpu(void)
 {
+#ifndef PS4
 	int r;
 	unsigned cpu;
 
@@ -39,4 +40,7 @@ int sched_getcpu(void)
 	r = __syscall(SYS_getcpu, &cpu, 0, 0);
 	if (!r) return cpu;
 	return __syscall_ret(r);
+#else
+	return -1;
+#endif
 }

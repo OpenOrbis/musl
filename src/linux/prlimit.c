@@ -7,6 +7,9 @@
 int prlimit(pid_t pid, int resource, const struct rlimit *new_limit, struct rlimit *old_limit)
 {
 	struct rlimit tmp;
+#ifdef PS4
+	return -1;
+#else
 	int r;
 	if (new_limit && SYSCALL_RLIM_INFINITY != RLIM_INFINITY) {
 		tmp = *new_limit;
@@ -20,6 +23,7 @@ int prlimit(pid_t pid, int resource, const struct rlimit *new_limit, struct rlim
 		FIX(old_limit->rlim_max);
 	}
 	return r;
+#endif
 }
 
 #undef prlimit64

@@ -26,6 +26,9 @@ static void bcast_barrier(int s)
 
 int __membarrier(int cmd, int flags)
 {
+#ifdef PS4
+	return -1;
+#else
 	int r = __syscall(SYS_membarrier, cmd, flags);
 	/* Emulate the private expedited command, which is needed by the
 	 * dynamic linker for installation of dynamic TLS, for older
@@ -58,6 +61,7 @@ int __membarrier(int cmd, int flags)
 		__restore_sigs(&set);
 	}
 	return __syscall_ret(r);
+#endif
 }
 
 void __membarrier_init(void)
@@ -71,7 +75,9 @@ void __membarrier_init(void)
 	 * to the application to do so if desired. Unfortunately this means
 	 * library code initialized after the process becomes multi-threaded
 	 * cannot use these features without accepting registration latency. */
+#ifndef PS4
 	__syscall(SYS_membarrier, MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED, 0);
+#endif
 }
 
 weak_alias(__membarrier, membarrier);

@@ -21,6 +21,11 @@ int ppoll(struct pollfd *fds, nfds_t n, const struct timespec *to, const sigset_
 		return __syscall_ret(r);
 	s = CLAMP(s);
 #endif
+
+#ifndef PS4
 	return syscall_cp(SYS_ppoll, fds, n,
 		to ? ((long[]){s, ns}) : 0, mask, _NSIG/8);
+#else
+	return -1;
+#endif
 }

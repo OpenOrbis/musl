@@ -6,11 +6,16 @@
 
 int timerfd_create(int clockid, int flags)
 {
+#ifndef PS4
 	return syscall(SYS_timerfd_create, clockid, flags);
+#else
+	return -1;
+#endif
 }
 
 int timerfd_settime(int fd, int flags, const struct itimerspec *new, struct itimerspec *old)
 {
+#ifndef PS4
 #ifdef SYS_timerfd_settime64
 	time_t is = new->it_interval.tv_sec, vs = new->it_value.tv_sec;
 	long ins = new->it_interval.tv_nsec, vns = new->it_value.tv_nsec;
@@ -35,10 +40,14 @@ int timerfd_settime(int fd, int flags, const struct itimerspec *new, struct itim
 	return __syscall_ret(r);
 #endif
 	return syscall(SYS_timerfd_settime, fd, flags, new, old);
+#else
+	return -1;
+#endif
 }
 
 int timerfd_gettime(int fd, struct itimerspec *cur)
 {
+#ifndef PS4
 #ifdef SYS_timerfd_gettime64
 	int r = -ENOSYS;
 	if (sizeof(time_t) > 4)
@@ -56,4 +65,7 @@ int timerfd_gettime(int fd, struct itimerspec *cur)
 	return __syscall_ret(r);
 #endif
 	return syscall(SYS_timerfd_gettime, fd, cur);
+#else
+	return -1;
+#endif
 }

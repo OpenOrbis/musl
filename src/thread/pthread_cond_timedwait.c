@@ -47,10 +47,12 @@ static inline void unlock(volatile int *l)
 
 static inline void unlock_requeue(volatile int *l, volatile int *r, int w)
 {
+#ifndef PS4
 	a_store(l, 0);
 	if (w) __wake(l, 1, 1);
 	else __syscall(SYS_futex, l, FUTEX_REQUEUE|FUTEX_PRIVATE, 0, 1, r) != -ENOSYS
 		|| __syscall(SYS_futex, l, FUTEX_REQUEUE, 0, 1, r);
+#endif
 }
 
 enum {

@@ -7,6 +7,7 @@
 
 int __clock_nanosleep(clockid_t clk, int flags, const struct timespec *req, struct timespec *rem)
 {
+#ifndef PS4
 	if (clk == CLOCK_THREAD_CPUTIME_ID) return EINVAL;
 #ifdef SYS_clock_nanosleep_time64
 	time_t s = req->tv_sec;
@@ -32,6 +33,9 @@ int __clock_nanosleep(clockid_t clk, int flags, const struct timespec *req, stru
 	if (clk == CLOCK_REALTIME && !flags)
 		return -__syscall_cp(SYS_nanosleep, req, rem);
 	return -__syscall_cp(SYS_clock_nanosleep, clk, flags, req, rem);
+#endif
+#else
+	return -1;
 #endif
 }
 

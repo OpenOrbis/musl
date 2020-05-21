@@ -32,7 +32,11 @@ int utimensat(int fd, const char *path, const struct timespec times[2], int flag
 	r = __syscall(SYS_utimensat, fd, path,
 		times ? ((long[]){s0, ns0, s1, ns1}) : 0, flags);
 #else
+#ifndef PS4
 	r = __syscall(SYS_utimensat, fd, path, times, flags);
+#else
+	r = __syscall(SYS_futimesat, fd, path, times);
+#endif
 #endif
 
 #ifdef SYS_futimesat

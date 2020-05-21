@@ -59,6 +59,7 @@ struct instance
 
 int pthread_barrier_wait(pthread_barrier_t *b)
 {
+#ifndef PS4
 	int limit = b->_b_limit;
 	struct instance *inst;
 
@@ -108,4 +109,7 @@ int pthread_barrier_wait(pthread_barrier_t *b)
 		__wake(&inst->finished, 1, 1);
 
 	return 0;
+#else
+	return -1;
+#endif
 }

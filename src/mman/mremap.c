@@ -11,6 +11,7 @@ weak_alias(dummy, __vm_wait);
 
 void *__mremap(void *old_addr, size_t old_len, size_t new_len, int flags, ...)
 {
+#ifndef PS4
 	va_list ap;
 	void *new_addr = 0;
 
@@ -27,6 +28,10 @@ void *__mremap(void *old_addr, size_t old_len, size_t new_len, int flags, ...)
 	}
 
 	return (void *)syscall(SYS_mremap, old_addr, old_len, new_len, flags, new_addr);
+#else
+	#pragma message "mremap not supported on PS4."
+	return -1;
+#endif
 }
 
 weak_alias(__mremap, mremap);

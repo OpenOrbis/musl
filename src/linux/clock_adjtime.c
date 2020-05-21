@@ -121,7 +121,12 @@ int clock_adjtime (clockid_t clock_id, struct timex *utx)
 		if (clock_id==CLOCK_REALTIME) r = __syscall(SYS_adjtimex, &ktx);
 		else
 #endif
+#ifndef PS4
 		r = __syscall(SYS_clock_adjtime, clock_id, &ktx);
+#else
+		r = -1;
+#endif
+
 		if (r>=0) {
 			utx->modes = ktx.modes;
 			utx->offset = ktx.offset;
@@ -150,5 +155,9 @@ int clock_adjtime (clockid_t clock_id, struct timex *utx)
 #ifdef SYS_adjtimex
 	if (clock_id==CLOCK_REALTIME) return syscall(SYS_adjtimex, utx);
 #endif
+#ifndef PS4
 	return syscall(SYS_clock_adjtime, clock_id, utx);
+#else
+	return -1;
+#endif
 }

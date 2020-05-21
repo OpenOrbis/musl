@@ -10,28 +10,44 @@ int epoll_create(int size)
 
 int epoll_create1(int flags)
 {
+#ifndef PS4
 	int r = __syscall(SYS_epoll_create1, flags);
 #ifdef SYS_epoll_create
 	if (r==-ENOSYS && !flags) r = __syscall(SYS_epoll_create, 1);
 #endif
 	return __syscall_ret(r);
+#else
+	return -1;
+#endif
 }
 
 int epoll_ctl(int fd, int op, int fd2, struct epoll_event *ev)
 {
+#ifndef PS4
 	return syscall(SYS_epoll_ctl, fd, op, fd2, ev);
+#else
+	return -1;
+#endif
 }
 
 int epoll_pwait(int fd, struct epoll_event *ev, int cnt, int to, const sigset_t *sigs)
 {
+#ifndef PS4
 	int r = __syscall(SYS_epoll_pwait, fd, ev, cnt, to, sigs, _NSIG/8);
 #ifdef SYS_epoll_wait
 	if (r==-ENOSYS && !sigs) r = __syscall(SYS_epoll_wait, fd, ev, cnt, to);
 #endif
 	return __syscall_ret(r);
+#else
+	return -1;
+#endif
 }
 
 int epoll_wait(int fd, struct epoll_event *ev, int cnt, int to)
 {
+#ifndef PS4
 	return epoll_pwait(fd, ev, cnt, to, 0);
+#else
+	return -1;
+#endif
 }

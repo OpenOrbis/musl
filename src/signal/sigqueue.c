@@ -16,7 +16,11 @@ int sigqueue(pid_t pid, int sig, const union sigval value)
 	si.si_uid = getuid();
 	__block_app_sigs(&set);
 	si.si_pid = getpid();
+#ifndef PS4
 	r = syscall(SYS_rt_sigqueueinfo, pid, sig, &si);
+#else
+	r = syscall(SYS_sigqueue, pid, sig, &si);
+#endif
 	__restore_sigs(&set);
 	return r;
 }

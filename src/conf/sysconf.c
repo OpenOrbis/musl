@@ -197,7 +197,11 @@ long sysconf(int name)
 	case JT_NPROCESSORS_ONLN & 255: ;
 		unsigned char set[128] = {1};
 		int i, cnt;
+#ifdef PS4
+		__syscall(SYS_cpuset_getaffinity, 0, 0, 0, sizeof set, set);
+#else
 		__syscall(SYS_sched_getaffinity, 0, sizeof set, set);
+#endif
 		for (i=cnt=0; i<sizeof set; i++)
 			for (; set[i]; set[i]&=set[i]-1, cnt++);
 		return cnt;

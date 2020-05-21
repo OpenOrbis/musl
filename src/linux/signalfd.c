@@ -6,6 +6,7 @@
 
 int signalfd(int fd, const sigset_t *sigs, int flags)
 {
+#ifndef PS4
 	int ret = __syscall(SYS_signalfd4, fd, sigs, _NSIG/8, flags);
 #ifdef SYS_signalfd
 	if (ret != -ENOSYS) return __syscall_ret(ret);
@@ -18,4 +19,7 @@ int signalfd(int fd, const sigset_t *sigs, int flags)
 	}
 #endif
 	return __syscall_ret(ret);
+#else
+	return -1;
+#endif
 }

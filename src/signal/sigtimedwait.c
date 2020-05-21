@@ -19,7 +19,11 @@ static int do_sigtimedwait(const sigset_t *restrict mask, siginfo_t *restrict si
 	return __syscall_cp(SYS_rt_sigtimedwait, mask, si,
 		ts ? ((long[]){CLAMP(s), ns}) : 0, _NSIG/8);;
 #else
+#ifndef PS4
 	return __syscall_cp(SYS_rt_sigtimedwait, mask, si, ts, _NSIG/8);
+#else
+	return __syscall_cp(SYS_sigtimedwait, mask, si, ts, _NSIG/8);
+#endif
 #endif
 }
 

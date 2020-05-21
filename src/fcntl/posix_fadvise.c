@@ -3,7 +3,9 @@
 
 int posix_fadvise(int fd, off_t base, off_t len, int advice)
 {
-#if defined(SYSCALL_FADVISE_6_ARG)
+#ifdef PS4
+	return 0;
+#elif defined(SYSCALL_FADVISE_6_ARG)
 	/* Some archs, at least arm and powerpc, have the syscall
 	 * arguments reordered to avoid needing 7 argument registers
 	 * due to 64-bit argument alignment. */

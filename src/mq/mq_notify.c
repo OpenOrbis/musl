@@ -39,7 +39,11 @@ int mq_notify(mqd_t mqd, const struct sigevent *sev)
 	static const char zeros[32];
 
 	if (!sev || sev->sigev_notify != SIGEV_THREAD)
+#ifndef PS4
 		return syscall(SYS_mq_notify, mqd, sev);
+#else
+		return syscall(SYS_kmq_notify, mqd, sev);
+#endif
 
 	s = socket(AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, 0);
 	if (s < 0) return -1;
@@ -63,7 +67,11 @@ int mq_notify(mqd_t mqd, const struct sigevent *sev)
 	sev2.sigev_signo = s;
 	sev2.sigev_value.sival_ptr = (void *)&zeros;
 
+#ifndef PS4
 	if (syscall(SYS_mq_notify, mqd, &sev2) < 0) {
+#else
+	if (syscall(SYS_kmq_notify, mqd, &sev2) < 0) {
+#endif
 		pthread_cancel(td);
 		__syscall(SYS_close, s);
 		return -1;

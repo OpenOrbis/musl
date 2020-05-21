@@ -36,7 +36,7 @@ char *__strerror_l(int e, locale_t loc)
 #endif
 	if (e >= sizeof errmsgidx / sizeof *errmsgidx) e = 0;
 	s = (char *)&errmsgstr + errmsgidx[e];
-	return (char *)LCTRANS(s, LC_MESSAGES, loc);
+	return (char *)s;
 }
 
 char *strerror(int e)

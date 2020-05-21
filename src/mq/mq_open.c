@@ -15,5 +15,9 @@ mqd_t mq_open(const char *name, int flags, ...)
 		attr = va_arg(ap, struct mq_attr *);
 		va_end(ap);
 	}
+#ifndef PS4
 	return syscall(SYS_mq_open, name, flags, mode, attr);
+#else
+	return syscall(SYS_kmq_open, name, flags, mode, attr);
+#endif
 }

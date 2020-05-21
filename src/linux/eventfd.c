@@ -5,11 +5,15 @@
 
 int eventfd(unsigned int count, int flags)
 {
+#ifndef PS4
 	int r = __syscall(SYS_eventfd2, count, flags);
 #ifdef SYS_eventfd
 	if (r==-ENOSYS && !flags) r = __syscall(SYS_eventfd, count);
 #endif
 	return __syscall_ret(r);
+#else
+	return -1;
+#endif
 }
 
 int eventfd_read(int fd, eventfd_t *value)

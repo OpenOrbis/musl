@@ -6,6 +6,7 @@
 
 int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int flg)
 {
+#ifndef PS4
 	if (!flg) return accept(fd, addr, len);
 	int ret = socketcall_cp(accept4, fd, addr, len, flg, 0, 0);
 	if (ret>=0 || (errno != ENOSYS && errno != EINVAL)) return ret;
@@ -16,4 +17,8 @@ int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int
 	if (flg & SOCK_NONBLOCK)
 		__syscall(SYS_fcntl, ret, F_SETFL, O_NONBLOCK);
 	return ret;
+#else
+	#pragma message "accept4 not supported on PS4."
+	return -1;
+#endif
 }

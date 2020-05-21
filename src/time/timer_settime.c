@@ -33,5 +33,9 @@ int timer_settime(timer_t t, int flags, const struct itimerspec *restrict val, s
 	}
 	return __syscall_ret(r);
 #endif
+#ifndef PS4
 	return syscall(SYS_timer_settime, t, flags, val, old);
+#else
+	return syscall(SYS_ktimer_settime, t, flags, val, old);
+#endif
 }

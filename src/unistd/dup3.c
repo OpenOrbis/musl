@@ -6,6 +6,7 @@
 
 int __dup3(int old, int new, int flags)
 {
+#ifndef PS4
 	int r;
 #ifdef SYS_dup2
 	if (old==new) return __syscall_ret(-EINVAL);
@@ -19,6 +20,9 @@ int __dup3(int old, int new, int flags)
 	while ((r=__syscall(SYS_dup3, old, new, flags))==-EBUSY);
 #endif
 	return __syscall_ret(r);
+#else
+	return -1;
+#endif
 }
 
 weak_alias(__dup3, dup3);

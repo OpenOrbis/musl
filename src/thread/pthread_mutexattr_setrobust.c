@@ -8,7 +8,9 @@ static void check_robust()
 {
 	void *p;
 	size_t l;
+#ifndef PS4
 	check_robust_result = -__syscall(SYS_get_robust_list, 0, &p, &l);
+#endif
 }
 
 int pthread_mutexattr_setrobust(pthread_mutexattr_t *a, int robust)

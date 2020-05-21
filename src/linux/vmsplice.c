@@ -4,5 +4,9 @@
 
 ssize_t vmsplice(int fd, const struct iovec *iov, size_t cnt, unsigned flags)
 {
+#ifndef PS4
 	return syscall(SYS_vmsplice, fd, iov, cnt, flags);
+#else
+	return -1;
+#endif
 }

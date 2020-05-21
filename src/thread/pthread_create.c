@@ -133,8 +133,10 @@ _Noreturn void __pthread_exit(void *result)
 
 		/* Robust list will no longer be valid, and was already
 		 * processed above, so unregister it with the kernel. */
+#ifndef PS4
 		if (self->robust_list.off)
 			__syscall(SYS_set_robust_list, 0, 3*sizeof(long));
+#endif
 
 		/* Since __unmapself bypasses the normal munmap code path,
 		 * explicitly wait for vmlock holders first. */
@@ -184,11 +186,17 @@ static int start(void *p)
 		if (a_cas(&args->control, 1, 2)==1)
 			__wait(&args->control, 0, 2, 1);
 		if (args->control) {
+#ifndef PS4
 			__syscall(SYS_set_tid_address, &args->control);
+#endif
 			for (;;) __syscall(SYS_exit, 0);
 		}
 	}
+#ifndef PS4
 	__syscall(SYS_rt_sigprocmask, SIG_SETMASK, &args->sig_mask, 0, _NSIG/8);
+#else
+	__syscall(SYS_sigprocmask, SIG_SETMASK, &args->sig_mask, 0, _NSIG/8);
+#endif
 	__pthread_exit(args->start_func(args->start_arg));
 	return 0;
 }
@@ -240,7 +248,11 @@ int __pthread_create(pthread_t *restrict res, const pthread_attr_t *restrict att
 		init_file_lock(__stdin_used);
 		init_file_lock(__stdout_used);
 		init_file_lock(__stderr_used);
+#ifndef PS4
 		__syscall(SYS_rt_sigprocmask, SIG_UNBLOCK, SIGPT_SET, 0, _NSIG/8);
+#else
+		__syscall(SYS_sigprocmask, SIG_UNBLOCK, SIGPT_SET, 0, _NSIG/8);
+#endif
 		self->tsd = (void **)__pthread_tsd_main;
 		__membarrier_init();
 		libc.threaded = 1;

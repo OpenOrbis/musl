@@ -2,6 +2,7 @@
 
 void __wait(volatile int *addr, volatile int *waiters, int val, int priv)
 {
+#ifndef PS4
 	int spins=100;
 	if (priv) priv = FUTEX_PRIVATE;
 	while (spins-- && (!waiters || !*waiters)) {
@@ -14,4 +15,5 @@ void __wait(volatile int *addr, volatile int *waiters, int val, int priv)
 		|| __syscall(SYS_futex, addr, FUTEX_WAIT, val, 0);
 	}
 	if (waiters) a_dec(waiters);
+#endif
 }

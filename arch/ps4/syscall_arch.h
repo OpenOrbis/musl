@@ -8,18 +8,12 @@ static __inline long __syscall0(long n)
 	__asm__ __volatile__
 	(
 		".intel_syntax\n\t"
-		"push r8\n\t"
-		"push r9\n\t"
-		"push r10\n\t"
 		"syscall\n\t"
 		"jnc syscallexit%=\n\t"
 		"neg rax\n\t"
-		"syscallexit%=:\n\t"
-		"pop r10\n\t"
-		"pop r9\n\t"
-		"pop r8\n\t" : "=a"(ret) :
-                               "a"(n) :
-                               "rcx", "r11", "memory"
+		"syscallexit%=:\n\t" : "=a"(ret) :
+                                       "a"(n) :
+                                       "rcx", "r8", "r9", "r10", "r11", "memory"
 	);
 
 	return ret;
@@ -32,18 +26,12 @@ static __inline long __syscall1(long n, long a1)
 	__asm__ __volatile__
 	(
 		".intel_syntax\n\t"
-		"push r8\n\t"
-		"push r9\n\t"
-		"push r10\n\t"
 		"syscall\n\t"
 		"jnc syscallexit%=\n\t"
 		"neg rax\n\t"
-		"syscallexit%=:\n\t"
-		"pop r10\n\t"
-		"pop r9\n\t"
-		"pop r8\n\t" : "=a"(ret) :
-                               "a"(n), "D"(a1) :
-                               "rcx", "r11", "memory"
+		"syscallexit%=:\n\t" : "=a"(ret) :
+                                       "a"(n), "D"(a1) :
+                                       "rcx", "r8", "r9", "r10", "r11", "memory"
 	);
 
 	return ret;
@@ -56,18 +44,12 @@ static __inline long __syscall2(long n, long a1, long a2)
 	__asm__ __volatile__
 	(
 		".intel_syntax\n\t"
-		"push r8\n\t"
-		"push r9\n\t"
-		"push r10\n\t"
 		"syscall\n\t"
 		"jnc syscallexit%=\n\t"
 		"neg rax\n\t"
-		"syscallexit%=:\n\t"
-		"pop r10\n\t"
-		"pop r9\n\t"
-		"pop r8\n\t" : "=a"(ret) :
-                               "a"(n), "D"(a1), "S"(a2) :
-                               "rcx", "r11", "memory"
+		"syscallexit%=:\n\t" : "=a"(ret) :
+                                       "a"(n), "D"(a1), "S"(a2) :
+                                       "rcx", "r8", "r9", "r10", "r11", "memory"
 	);
 
 	return ret;
@@ -80,18 +62,12 @@ static __inline long __syscall3(long n, long a1, long a2, long a3)
 	__asm__ __volatile__
 	(
 		".intel_syntax\n\t"
-		"push r8\n\t"
-		"push r9\n\t"
-		"push r10\n\t"
 		"syscall\n\t"
 		"jnc syscallexit%=\n\t"
 		"neg rax\n\t"
-		"syscallexit%=:\n\t"
-		"pop r10\n\t"
-		"pop r9\n\t"
-		"pop r8\n\t" : "=a"(ret) :
-                               "a"(n), "D"(a1), "S"(a2), "d"(a3) :
-                               "rcx", "r11", "memory"
+		"syscallexit%=:\n\t" : "=a"(ret) :
+                                       "a"(n), "D"(a1), "S"(a2), "d"(a3) :
+                                       "rcx", "r8", "r9", "r10", "r11", "memory"
 	);
 
 	return ret;
@@ -105,18 +81,12 @@ static __inline long __syscall4(long n, long a1, long a2, long a3, long a4)
 	__asm__ __volatile__
 	(
 		".intel_syntax\n\t"
-		"push r8\n\t"
-		"push r9\n\t"
-		"push r10\n\t"
 		"syscall\n\t"
 		"jnc syscallexit%=\n\t"
 		"neg rax\n\t"
-		"syscallexit%=:\n\t"
-		"pop r10\n\t"
-		"pop r9\n\t"
-		"pop r8\n\t" : "=a"(ret) :
-                               "a"(n), "D"(a1), "S"(a2), "d"(a3), "r"(r10) :
-                               "rcx", "r11", "memory"
+		"syscallexit%=:\n\t" : "=a"(ret), "+r"(r10) :
+                                       "a"(n), "D"(a1), "S"(a2), "d"(a3) :
+                                       "rcx", "r8", "r9", "r11", "memory"
 	);
 
 	return ret;
@@ -131,19 +101,12 @@ static __inline long __syscall5(long n, long a1, long a2, long a3, long a4, long
 	__asm__ __volatile__
 	(
 		".intel_syntax\n\t"
-		"push r8\n\t"
-		"push r9\n\t"
-		"push r10\n\t"
 		"syscall\n\t"
 		"jnc syscallexit%=\n\t"
 		"neg rax\n\t"
-		"syscallexit%=:\n\t"
-		"pop r10\n\t"
-		"pop r9\n\t"
-		"pop r8\n\t" : "=a"(ret) :
-                               "a"(n), "D"(a1), "S"(a2), "d"(a3),
-                                   "r"(r10), "r"(r8) :
-                               "rcx", "r11", "memory"
+		"syscallexit%=:\n\t" : "=a"(ret), "+r"(r10), "+r"(r8) :
+                                       "a"(n), "D"(a1), "S"(a2), "d"(a3) :
+                                       "rcx", "r9", "r11", "memory"
 	);
 
 	return ret;
@@ -159,19 +122,12 @@ static __inline long __syscall6(long n, long a1, long a2, long a3, long a4, long
 	__asm__ __volatile__
 	(
 		".intel_syntax\n\t"
-		"push r8\n\t"
-		"push r9\n\t"
-		"push r10\n\t"
 		"syscall\n\t"
 		"jnc syscallexit%=\n\t"
 		"neg rax\n\t"
-		"syscallexit%=:\n\t"
-		"pop r10\n\t"
-		"pop r9\n\t"
-		"pop r8\n\t" : "=a"(ret) :
-                               "a"(n), "D"(a1), "S"(a2), "d"(a3),
-                                   "r"(r10), "r"(r8), "r"(r9) :
-                               "rcx", "r11", "memory"
+		"syscallexit%=:\n\t" : "=a"(ret), "+r"(r10), "+r"(r8), "+r"(r9) :
+                                       "a"(n), "D"(a1), "S"(a2), "d"(a3) :
+                                       "rcx", "r11", "memory"
 	);
 
 	return ret;

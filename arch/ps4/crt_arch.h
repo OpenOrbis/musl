@@ -1,4 +1,4 @@
-/*__asm__(
+__asm__(
 ".text \n"
 ".global " START " \n"
 START ": \n"
@@ -9,9 +9,9 @@ START ": \n"
 "	lea _DYNAMIC(%rip),%rsi \n"
 "	andq $-16,%rsp \n"
 "	call " START "_ps4_c \n"
-);*/
+);
 
-__asm__(
+/*__asm__(
 ".intel_syntax noprefix \n"
 ".global " START " \n"
 START ": \n"
@@ -25,7 +25,7 @@ START ": \n"
 "mov r11d, eax \n"
 "mov edi, r11d \n"
 "call exit \n"
-);
+);*/
 
 // sceLibcParam
 __asm__(

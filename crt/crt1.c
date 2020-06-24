@@ -8,6 +8,10 @@
 int main();
 weak void _init();
 weak void _fini();
+weak void __init_array_start();
+weak void __init_array_end();
+weak void __fini_array_start();
+weak void __fini_array_end();
 int __libc_start_main(int (*)(), int, char **,
 	void (*)(), void(*)(), void(*)());
 

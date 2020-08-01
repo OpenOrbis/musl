@@ -12,6 +12,7 @@ int eventfd(unsigned int count, int flags)
 #endif
 	return __syscall_ret(r);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

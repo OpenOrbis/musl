@@ -38,6 +38,7 @@ int recvmmsg(int fd, struct mmsghdr *msgvec, unsigned int vlen, unsigned int fla
 	return syscall_cp(SYS_recvmmsg, fd, msgvec, vlen, flags, timeout);
 #endif
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

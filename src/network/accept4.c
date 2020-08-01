@@ -19,6 +19,7 @@ int accept4(int fd, struct sockaddr *restrict addr, socklen_t *restrict len, int
 	return ret;
 #else
 	#pragma message "accept4 not supported on PS4."
+	errno = ENOSYS;
 	return -1;
 #endif
 }

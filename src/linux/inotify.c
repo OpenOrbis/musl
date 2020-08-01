@@ -15,6 +15,7 @@ int inotify_init1(int flags)
 #endif
 	return __syscall_ret(r);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }
@@ -24,6 +25,7 @@ int inotify_add_watch(int fd, const char *pathname, uint32_t mask)
 #ifndef PS4
 	return syscall(SYS_inotify_add_watch, fd, pathname, mask);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }
@@ -33,6 +35,7 @@ int inotify_rm_watch(int fd, int wd)
 #ifndef PS4
 	return syscall(SYS_inotify_rm_watch, fd, wd);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

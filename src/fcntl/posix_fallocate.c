@@ -1,9 +1,11 @@
 #include <fcntl.h>
+#include <errno.h>
 #include "syscall.h"
 
 int posix_fallocate(int fd, off_t base, off_t len)
 {
 #ifdef PS4
+	errno = ENOSYS;
 	return -1;
 #else
 	return -__syscall(SYS_fallocate, fd, 0, __SYSCALL_LL_E(base),

@@ -124,6 +124,7 @@ int clock_adjtime (clockid_t clock_id, struct timex *utx)
 #ifndef PS4
 		r = __syscall(SYS_clock_adjtime, clock_id, &ktx);
 #else
+		errno = ENOSYS;
 		r = -1;
 #endif
 
@@ -158,6 +159,7 @@ int clock_adjtime (clockid_t clock_id, struct timex *utx)
 #ifndef PS4
 	return syscall(SYS_clock_adjtime, clock_id, utx);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

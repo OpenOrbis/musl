@@ -21,6 +21,7 @@ int __dup3(int old, int new, int flags)
 #endif
 	return __syscall_ret(r);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

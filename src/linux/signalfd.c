@@ -20,6 +20,7 @@ int signalfd(int fd, const sigset_t *sigs, int flags)
 #endif
 	return __syscall_ret(ret);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

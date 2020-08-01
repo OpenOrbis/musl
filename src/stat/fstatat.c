@@ -69,6 +69,7 @@ static int fstatat_statx(int fd, const char *restrict path, struct stat *restric
 	};
 	return 0;
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

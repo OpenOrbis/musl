@@ -26,6 +26,7 @@ int ppoll(struct pollfd *fds, nfds_t n, const struct timespec *to, const sigset_
 	return syscall_cp(SYS_ppoll, fds, n,
 		to ? ((long[]){s, ns}) : 0, mask, _NSIG/8);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

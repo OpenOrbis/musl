@@ -27,6 +27,7 @@ static void bcast_barrier(int s)
 int __membarrier(int cmd, int flags)
 {
 #ifdef PS4
+	errno = ENOSYS;
 	return -1;
 #else
 	int r = __syscall(SYS_membarrier, cmd, flags);

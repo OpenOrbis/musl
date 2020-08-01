@@ -1,5 +1,6 @@
 #define _GNU_SOURCE
 #include <fcntl.h>
+#include <errno.h>
 #include "syscall.h"
 
 int name_to_handle_at(int dirfd, const char *pathname,
@@ -9,6 +10,7 @@ int name_to_handle_at(int dirfd, const char *pathname,
 	return syscall(SYS_name_to_handle_at, dirfd,
 		pathname, handle, mount_id, flags);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

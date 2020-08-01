@@ -9,6 +9,7 @@ int timerfd_create(int clockid, int flags)
 #ifndef PS4
 	return syscall(SYS_timerfd_create, clockid, flags);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }
@@ -41,6 +42,7 @@ int timerfd_settime(int fd, int flags, const struct itimerspec *new, struct itim
 #endif
 	return syscall(SYS_timerfd_settime, fd, flags, new, old);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }
@@ -66,6 +68,7 @@ int timerfd_gettime(int fd, struct itimerspec *cur)
 #endif
 	return syscall(SYS_timerfd_gettime, fd, cur);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

@@ -26,6 +26,7 @@ static int __futex4_cp(volatile void *addr, int op, int val, const struct timesp
 	if (r != -ENOSYS) return r;
 	return __syscall_cp(SYS_futex, addr, op & ~FUTEX_PRIVATE, val, to);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }
@@ -64,6 +65,7 @@ int __timedwait_cp(volatile int *addr, int val,
 
 	return r;
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

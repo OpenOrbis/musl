@@ -41,6 +41,7 @@ int sched_getcpu(void)
 	if (!r) return cpu;
 	return __syscall_ret(r);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

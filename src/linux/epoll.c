@@ -17,6 +17,7 @@ int epoll_create1(int flags)
 #endif
 	return __syscall_ret(r);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }
@@ -26,6 +27,7 @@ int epoll_ctl(int fd, int op, int fd2, struct epoll_event *ev)
 #ifndef PS4
 	return syscall(SYS_epoll_ctl, fd, op, fd2, ev);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }
@@ -39,6 +41,7 @@ int epoll_pwait(int fd, struct epoll_event *ev, int cnt, int to, const sigset_t 
 #endif
 	return __syscall_ret(r);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }
@@ -48,6 +51,7 @@ int epoll_wait(int fd, struct epoll_event *ev, int cnt, int to)
 #ifndef PS4
 	return epoll_pwait(fd, ev, cnt, to, 0);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

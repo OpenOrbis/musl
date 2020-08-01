@@ -1,5 +1,6 @@
 #include <sys/prctl.h>
 #include <stdarg.h>
+#include <errno.h>
 #include "syscall.h"
 
 int prctl(int op, ...)
@@ -13,6 +14,7 @@ int prctl(int op, ...)
 #ifndef PS4
 	return syscall(SYS_prctl, op, x[0], x[1], x[2], x[3]);
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

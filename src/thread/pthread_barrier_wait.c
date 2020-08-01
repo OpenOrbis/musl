@@ -110,6 +110,7 @@ int pthread_barrier_wait(pthread_barrier_t *b)
 
 	return 0;
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

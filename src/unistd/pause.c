@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <errno.h>
 #include "syscall.h"
 
 int pause(void)
@@ -10,6 +11,7 @@ int pause(void)
 	return syscall_cp(SYS_ppoll, 0, 0, 0, 0);
 #endif
 #else
+	errno = ENOSYS;
 	return -1;
 #endif
 }

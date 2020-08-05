@@ -35,8 +35,16 @@ int __clock_nanosleep(clockid_t clk, int flags, const struct timespec *req, stru
 	return -__syscall_cp(SYS_clock_nanosleep, clk, flags, req, rem);
 #endif
 #else
-	errno = ENOSYS;
-	return -1;
+	time_t s = req->tv_sec;
+	long ns = req->tv_nsec;
+	long long extra = s - CLAMP(s);
+	long ts32[2] = { CLAMP(s), ns };
+	int r = -__syscall_cp(SYS_nanosleep, &ts32, &ts32);
+	if (r==-EINTR && rem && !(flags & TIMER_ABSTIME)) {
+		rem->tv_sec = ts32[0] + extra;
+		rem->tv_nsec = ts32[1];
+	}
+	return -r;
 #endif
 }
 

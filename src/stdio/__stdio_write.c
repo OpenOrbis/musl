@@ -24,7 +24,7 @@ size_t __stdio_write(FILE *f, const unsigned char *buf, size_t len)
 			return iovcnt == 2 ? 0 : len-iov[0].iov_len;
 		}
 		rem -= cnt;
-		if (cnt > iov[0].iov_len) {
+		if (cnt >= iov[0].iov_len) {
 			cnt -= iov[0].iov_len;
 			iov++; iovcnt--;
 		}

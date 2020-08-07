@@ -5,7 +5,7 @@
 static unsigned char buf[BUFSIZ+UNGET];
 hidden FILE __stdout_FILE = {
 	.buf = buf+UNGET,
-	.buf_size = sizeof buf-UNGET,
+	.buf_size = 0,
 	.fd = 1,
 	.flags = F_PERM | F_NORD,
 	.lbf = '\n',

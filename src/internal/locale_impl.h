@@ -35,9 +35,17 @@ hidden char *__gettextdomain(void);
 #define C_LOCALE ((locale_t)&__c_locale)
 #define UTF8_LOCALE ((locale_t)&__c_dot_utf8_locale)
 
+#ifndef PS4
 #define CURRENT_LOCALE (__pthread_self()->locale)
+#else
+#define CURRENT_LOCALE (*({\
+    if(!__musl_current_locale)\
+        __musl_current_locale = &libc.global_locale;\
+    &__musl_current_locale;\
+}))
+#endif
 
-#define CURRENT_UTF8 (!!__pthread_self()->locale->cat[LC_CTYPE])
+#define CURRENT_UTF8 (!!CURRENT_LOCALE->cat[LC_CTYPE])
 
 #undef MB_CUR_MAX
 #define MB_CUR_MAX (CURRENT_UTF8 ? 4 : 1)

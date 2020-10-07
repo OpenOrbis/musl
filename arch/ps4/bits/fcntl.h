@@ -27,14 +27,14 @@
 
 #define F_SETOWN 6
 #define F_GETOWN 5
-#define F_SETSIG 179 // linux-specific, set to invalid value
-#define F_GETSIG 179 // linux-specific, set to invalid value
+//F_SETSIG is linux-specific
+//F_GETSIG is linux-specific
 
 #define F_GETLK 11
 #define F_SETLK 12
 #define F_SETLKW 13
 
-#define F_SETOWN_EX 179 // missing in freebsd headers, set to invalid value
-#define F_GETOWN_EX 179 // missing in freebsd headers, set to invalid value
+//F_SETOWN_EX is linux-specific
+//F_GETOWN_EX is linux-specific
 
-#define F_GETOWNER_UIDS 179 // missing in freebsd headers, set to invalid value
+//F_GETOWNER_UIDS missing in freebsd headers

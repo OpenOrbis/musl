@@ -209,8 +209,8 @@ struct __ptcb {
 	struct __ptcb *__next;
 };
 
-void pthread_cleanup_push(struct __ptcb *, void (*)(void *), void *);
-void pthread_cleanup_pop(struct __ptcb *, int);
+void pthread_cleanup_push(void (*)(void *), void *);
+void pthread_cleanup_pop(int);
 
 #ifdef _GNU_SOURCE
 struct cpu_set_t;

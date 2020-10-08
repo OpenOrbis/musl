@@ -17,6 +17,7 @@ int grantpt(int fd)
 	return 0;
 }
 
+#ifndef PS4
 int unlockpt(int fd)
 {
 	int unlock = 0;
@@ -31,5 +32,16 @@ int __ptsname_r(int fd, char *buf, size_t len)
 	if (snprintf(buf, len, "/dev/pts/%d", pty) >= len) return ERANGE;
 	return 0;
 }
+#else
+int unlockpt(int fd)
+{
+	return -1;
+}
+
+int __ptsname_r(int fd, char *buf, size_t len)
+{
+	return -1;
+}
+#endif
 
 weak_alias(__ptsname_r, ptsname_r);

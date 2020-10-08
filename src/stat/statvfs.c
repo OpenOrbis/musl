@@ -25,6 +25,7 @@ static int __fstatfs(int fd, struct statfs *buf)
 weak_alias(__statfs, statfs);
 weak_alias(__fstatfs, fstatfs);
 
+#ifndef PS4
 static void fixup(struct statvfs *out, const struct statfs *in)
 {
 	*out = (struct statvfs){0};
@@ -39,13 +40,17 @@ static void fixup(struct statvfs *out, const struct statfs *in)
 	out->f_fsid = in->f_fsid.__val[0];
 	out->f_flag = in->f_flags;
 	out->f_namemax = in->f_namelen;
+	out->f_namelen = in->f_namelen;
 }
+#endif
 
 int statvfs(const char *restrict path, struct statvfs *restrict buf)
 {
 	struct statfs kbuf;
 	if (__statfs(path, &kbuf)<0) return -1;
+#ifndef PS4
 	fixup(buf, &kbuf);
+#endif
 	return 0;
 }
 
@@ -53,7 +58,9 @@ int fstatvfs(int fd, struct statvfs *buf)
 {
 	struct statfs kbuf;
 	if (__fstatfs(fd, &kbuf)<0) return -1;
+#ifndef PS4
 	fixup(buf, &kbuf);
+#endif
 	return 0;
 }
 

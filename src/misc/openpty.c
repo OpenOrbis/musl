@@ -7,6 +7,7 @@
 
 /* Nonstandard, but vastly superior to the standard functions */
 
+#ifndef PS4
 int openpty(int *pm, int *ps, char *name, const struct termios *tio, const struct winsize *ws)
 {
 	int m, s, n=0, cs;
@@ -38,3 +39,10 @@ fail:
 	pthread_setcancelstate(cs, 0);
 	return -1;
 }
+#else
+int openpty(int *pm, int *ps, char *name, const struct termios *tio, const struct winsize *ws)
+{
+	return -1;
+}
+#endif
+

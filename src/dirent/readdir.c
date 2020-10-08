@@ -22,7 +22,7 @@ struct dirent *readdir(DIR *dir)
 	}
 	de = (void *)(dir->buf + dir->buf_pos);
 	dir->buf_pos += de->d_reclen;
-	dir->tell = de->d_off;
+	//dir->tell = de->d_off;
 	return de;
 }
 

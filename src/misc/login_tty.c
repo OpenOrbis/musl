@@ -2,6 +2,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#ifndef PS4
 int login_tty(int fd)
 {
 	setsid();
@@ -12,3 +13,9 @@ int login_tty(int fd)
 	if (fd>2) close(fd);
 	return 0;
 }
+#else
+int login_tty(int fd)
+{
+	return -1;
+}
+#endif

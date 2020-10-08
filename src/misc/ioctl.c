@@ -28,9 +28,10 @@ struct ioctl_compat_map {
  * number producing macros; only size of result is meaningful. */
 #define new_misaligned(n) struct { int i; time_t t; char c[(n)-4]; }
 
+#ifndef PS4
 static const struct ioctl_compat_map compat_map[] = {
-	{ SIOCGSTAMP, SIOCGSTAMP_OLD, 8, R, 0, OFFS(0, 4) },
-	{ SIOCGSTAMPNS, SIOCGSTAMPNS_OLD, 8, R, 0, OFFS(0, 4) },
+	{ LINUX_SIOCGSTAMP, LINUX_SIOCGSTAMP_OLD, 8, R, 0, OFFS(0, 4) },
+	{ LINUX_SIOCGSTAMPNS, LINUX_SIOCGSTAMPNS_OLD, 8, R, 0, OFFS(0, 4) },
 
 	/* SNDRV_TIMER_IOCTL_STATUS */
 	{ _IOR('T', 0x14, char[96]), _IOR('T', 0x14, 88), 88, R, 0, OFFS(0,4) },
@@ -111,6 +112,7 @@ static void convert_ioctl_struct(const struct ioctl_compat_map *map, char *old, 
 	if (dir==W) memcpy(old+old_offset, new+new_offset, old_size-old_offset);
 	else memcpy(new+new_offset, old+old_offset, old_size-old_offset);
 }
+#endif
 
 int ioctl(int fd, int req, ...)
 {
@@ -120,6 +122,7 @@ int ioctl(int fd, int req, ...)
 	arg = va_arg(ap, void *);
 	va_end(ap);
 	int r = __syscall(SYS_ioctl, fd, req, arg);
+	#ifndef PS4
 	if (SIOCGSTAMP != SIOCGSTAMP_OLD && req && r==-ENOTTY) {
 		for (int i=0; i<sizeof compat_map/sizeof *compat_map; i++) {
 			if (compat_map[i].new_req != req) continue;
@@ -134,5 +137,6 @@ int ioctl(int fd, int req, ...)
 			break;
 		}
 	}
+	#endif
 	return __syscall_ret(r);
 }

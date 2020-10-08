@@ -43,7 +43,11 @@ FILE *__fdopen(int fd, const char *mode)
 
 	/* Activate line buffered mode for terminals */
 	f->lbf = EOF;
+#ifndef PS4
 	if (!(f->flags & F_NOWR) && !__syscall(SYS_ioctl, fd, TIOCGWINSZ, &wsz))
+#else
+	if (!(f->flags & F_NOWR) && !__syscall(SYS_ioctl, fd, LINUX_TIOCGWINSZ, &wsz))
+#endif
 		f->lbf = '\n';
 
 	/* Initialize op ptrs. No problem if some are unneeded. */

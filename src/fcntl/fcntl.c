@@ -13,6 +13,7 @@ int fcntl(int fd, int cmd, ...)
 	va_end(ap);
 	if (cmd == F_SETFL) arg |= O_LARGEFILE;
 	if (cmd == F_SETLKW) return syscall_cp(SYS_fcntl, fd, cmd, (void *)arg);
+#ifndef PS4 // linux-specific hack
 	if (cmd == F_GETOWN) {
 		struct f_owner_ex ex;
 		int ret = __syscall(SYS_fcntl, fd, F_GETOWN_EX, &ex);
@@ -20,6 +21,7 @@ int fcntl(int fd, int cmd, ...)
 		if (ret) return __syscall_ret(ret);
 		return ex.type == F_OWNER_PGRP ? -ex.pid : ex.pid;
 	}
+#endif
 	if (cmd == F_DUPFD_CLOEXEC) {
 		int ret = __syscall(SYS_fcntl, fd, F_DUPFD_CLOEXEC, arg);
 		if (ret != -EINVAL) {
@@ -39,8 +41,10 @@ int fcntl(int fd, int cmd, ...)
 	switch (cmd) {
 	case F_SETLK:
 	case F_GETLK:
+#ifndef PS4
 	case F_GETOWN_EX:
 	case F_SETOWN_EX:
+#endif
 		return syscall(SYS_fcntl, fd, cmd, (void *)arg);
 	default:
 		return syscall(SYS_fcntl, fd, cmd, arg);

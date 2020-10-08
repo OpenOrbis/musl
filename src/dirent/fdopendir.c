@@ -13,10 +13,12 @@ DIR *fdopendir(int fd)
 	if (fstat(fd, &st) < 0) {
 		return 0;
 	}
+#ifndef PS4
 	if (fcntl(fd, F_GETFL) & O_PATH) {
 		errno = EBADF;
 		return 0;
 	}
+#endif
 	if (!S_ISDIR(st.st_mode)) {
 		errno = ENOTDIR;
 		return 0;

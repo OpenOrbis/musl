@@ -248,9 +248,11 @@ static void *io_thread_func(void *ctx)
 	case O_SYNC:
 		ret = fsync(fd);
 		break;
+#ifndef PS4
 	case O_DSYNC:
 		ret = fdatasync(fd);
 		break;
+#endif
 	}
 	at.ret = ret;
 	at.err = ret<0 ? errno : 0;
@@ -330,7 +332,11 @@ int aio_write(struct aiocb *cb)
 
 int aio_fsync(int op, struct aiocb *cb)
 {
-	if (op != O_SYNC && op != O_DSYNC) {
+	if (op != O_SYNC
+#ifndef PS4
+         && op != O_DSYNC
+#endif
+        ) {
 		errno = EINVAL;
 		return -1;
 	}

@@ -44,7 +44,9 @@ struct pthread {
 		volatile void *volatile pending;
 	} robust_list;
 	volatile int timer_id;
+#ifndef PS4
 	locale_t locale;
+#endif
 	volatile int killlock[1];
 	char *dlerror_buf;
 	void *stdio_locks;
@@ -54,6 +56,10 @@ struct pthread {
 	uintptr_t canary_at_end;
 	uintptr_t *dtv_copy;
 };
+
+#ifdef PS4
+extern __thread locale_t __musl_current_locale;
+#endif
 
 enum {
 	DT_EXITING = 0,

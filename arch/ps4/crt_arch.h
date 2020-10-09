@@ -25,6 +25,7 @@ START ": \n"
 "mov r11d, eax \n"
 "mov edi, r11d \n"
 "call exit \n"
+".att_syntax prefix \n"
 );*/
 
 // sceLibcParam
@@ -53,6 +54,7 @@ __asm__(
 "	.quad 	0 \n"
 "	.quad	0 \n"
 "	.quad 	0 \n"
+".att_syntax prefix \n"
 );
 
 // sceKernelMemParam
@@ -68,6 +70,7 @@ __asm__(
 "	.quad 	0 \n"
 "	.quad 	0 \n"
 "	.quad 	0 \n"
+".att_syntax prefix \n"
 );
 
 // sceKernelFsParam
@@ -79,6 +82,7 @@ __asm__(
 	// size
 "	.quad 	0x10 \n"
 "	.quad 	0 \n"
+".att_syntax prefix \n"
 );
 
 // sceLibcMallocReplace
@@ -102,6 +106,7 @@ __asm__(
 "	.quad 	0 \n"
 "	.quad 	0 \n"
 "	.quad 	0 \n"
+".att_syntax prefix \n"
 );
 
 // sceLibcNewReplace
@@ -125,6 +130,7 @@ __asm__(
 "	.quad 	0 \n"
 "	.quad 	0 \n"
 "	.quad 	0 \n"
+".att_syntax prefix \n"
 );
 
 // sceLibcMallocReplaceForTls
@@ -141,6 +147,7 @@ __asm__(
 "	.quad 	0 \n"
 "	.quad 	0 \n"
 "	.quad 	0 \n"
+".att_syntax prefix \n"
 );
 
 // sce_process_param
@@ -164,6 +171,7 @@ __asm__(
 "	.quad 	_sceLibcParam \n"
 "	.quad 	_sceKernelMemParam \n"
 "	.quad 	_sceKernelFsParam \n"
+".att_syntax prefix \n"
 );
 
 // data globals
@@ -183,5 +191,6 @@ __asm__(
 "	.quad 	0 \n"
 "_sceLibc: \n"
 "	.quad 	0 \n"
+".att_syntax prefix \n"
 );
 

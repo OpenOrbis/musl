@@ -13,6 +13,7 @@ volatile int __thread_list_lock;
 
 int __init_tp(void *p)
 {
+#ifndef PS4
 	pthread_t td = p;
 	td->self = td;
 	int r = __set_thread_area(TP_ADJ(p));
@@ -24,6 +25,7 @@ int __init_tp(void *p)
 	td->robust_list.head = &td->robust_list.head;
 	td->sysinfo = __sysinfo;
 	td->next = td->prev = td;
+#endif
 	return 0;
 }
 

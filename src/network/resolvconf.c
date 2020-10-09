@@ -6,6 +6,47 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 
+#ifdef PS4
+
+/*
+The OpenOrbis toolchain links the static musl libc in such a way that only the
+functions used by a particular application are kept. This means that an
+application won't have to link to libSceNet if it doesn't use the dynamic
+resolver.
+*/
+
+typedef struct OrbisNetDnsInfo {
+	in_addr_t primary_dns;
+	in_addr_t secondary_dns;
+} OrbisNetDnsInfo;
+
+int sceNetGetDnsInfo(OrbisNetDnsInfo* tgt, int flags);
+
+int __get_resolv_conf(struct resolvconf *conf, char *search, size_t search_sz)
+{
+	conf->ndots = 1;
+	conf->timeout = 5;
+	conf->attempts = 2;
+	OrbisNetDnsInfo i;
+	int ndns = sceNetGetDnsInfo(&i, 0);
+	if(ndns < 0 || ndns > 2)
+		return -1;
+	conf->nns = ndns;
+	if(ndns >= 1) {
+		conf->ns[0].family = AF_INET;
+		conf->ns[0].scopeid = 0;
+		memcpy(&conf->ns[0].addr, &i.primary_dns, sizeof(i.primary_dns));
+	}
+	if(ndns >= 2) {
+		conf->ns[1].family = AF_INET;
+		conf->ns[1].scopeid = 0;
+		memcpy(&conf->ns[1].addr, &i.secondary_dns, sizeof(i.secondary_dns));
+	}
+	return 0;
+}
+
+#else
+
 int __get_resolv_conf(struct resolvconf *conf, char *search, size_t search_sz)
 {
 	char line[256];
@@ -92,3 +133,5 @@ no_resolv_conf:
 
 	return 0;
 }
+
+#endif

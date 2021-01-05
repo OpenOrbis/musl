@@ -24,12 +24,12 @@ TYPEDEF unsigned _Int64 uint64_t;
 TYPEDEF unsigned _Int64 u_int64_t;
 TYPEDEF unsigned _Int64 uintmax_t;
 
-TYPEDEF unsigned mode_t;
-TYPEDEF unsigned _Reg nlink_t;
+TYPEDEF unsigned short mode_t;
+TYPEDEF unsigned short nlink_t;
 TYPEDEF _Int64 off_t;
 TYPEDEF unsigned int ino_t;
 TYPEDEF unsigned int dev_t;
-TYPEDEF long blksize_t;
+TYPEDEF unsigned int blksize_t;
 TYPEDEF _Int64 blkcnt_t;
 TYPEDEF unsigned _Int64 fsblkcnt_t;
 TYPEDEF unsigned _Int64 fsfilcnt_t;
@@ -44,10 +44,10 @@ STRUCT timeval { time_t tv_sec; suseconds_t tv_usec; };
 STRUCT timespec { time_t tv_sec; int :8*(sizeof(time_t)-sizeof(long))*(__BYTE_ORDER==4321); long tv_nsec; int :8*(sizeof(time_t)-sizeof(long))*(__BYTE_ORDER!=4321); };
 
 TYPEDEF int pid_t;
-TYPEDEF unsigned id_t;
+TYPEDEF unsigned _Int64 id_t;
 TYPEDEF unsigned uid_t;
 TYPEDEF unsigned gid_t;
-TYPEDEF int key_t;
+TYPEDEF long key_t;
 TYPEDEF unsigned useconds_t;
 
 #ifdef __cplusplus
@@ -78,7 +78,7 @@ TYPEDEF struct __sigset_t { unsigned long __bits[128/sizeof(long)]; } sigset_t;
 STRUCT iovec { void *iov_base; size_t iov_len; };
 
 TYPEDEF unsigned socklen_t;
-TYPEDEF unsigned short sa_family_t;
+TYPEDEF unsigned char sa_family_t;
 
 TYPEDEF struct { union { int __i[sizeof(long)==8?14:9]; volatile int __vi[sizeof(long)==8?14:9]; unsigned long __s[sizeof(long)==8?7:9]; } __u; } pthread_attr_t;
 TYPEDEF struct { union { int __i[sizeof(long)==8?10:6]; volatile int __vi[sizeof(long)==8?10:6]; volatile void *volatile __p[sizeof(long)==8?5:6]; } __u; } pthread_mutex_t;

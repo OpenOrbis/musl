@@ -123,7 +123,7 @@
 #define	__NR_setgid	181
 #define	__NR_setegid	182
 #define	__NR_seteuid	183
-#define	__NR_stat	188
+//#define __NR_stat 188  //available and working, but uses old 'struct stat'
 #define	__NR_fstat	189
 #define	__NR_lstat	190
 #define	__NR_pathconf	191

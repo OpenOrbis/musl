@@ -123,11 +123,6 @@ int clock_adjtime (clockid_t clock_id, struct timex *utx)
 #endif
 #ifndef PS4
 		r = __syscall(SYS_clock_adjtime, clock_id, &ktx);
-#else
-		errno = ENOSYS;
-		r = -1;
-#endif
-
 		if (r>=0) {
 			utx->modes = ktx.modes;
 			utx->offset = ktx.offset;
@@ -152,6 +147,11 @@ int clock_adjtime (clockid_t clock_id, struct timex *utx)
 			utx->tai = ktx.tai;
 		}
 		return __syscall_ret(r);
+#else
+		errno = ENOSYS;
+		return -1;
+#endif
+
 	}
 #ifdef SYS_adjtimex
 	if (clock_id==CLOCK_REALTIME) return syscall(SYS_adjtimex, utx);

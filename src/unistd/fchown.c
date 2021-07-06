@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include "syscall.h"
 
+#ifndef PS4 //only in libkernel_sys.sprx
 int fchown(int fd, uid_t uid, gid_t gid)
 {
 	int ret = __syscall(SYS_fchown, fd, uid, gid);
@@ -18,3 +19,4 @@ int fchown(int fd, uid_t uid, gid_t gid)
 #endif
 
 }
+#endif

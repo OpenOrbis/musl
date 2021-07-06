@@ -4,6 +4,8 @@
 #include "libc.h"
 #include "pthread_impl.h"
 
+#ifndef PS4
+
 struct ctx {
 	int id, eid, sid;
 	int nr, err;
@@ -37,3 +39,5 @@ int __setxid(int nr, int id, int eid, int sid)
 	}
 	return 0;
 }
+
+#endif

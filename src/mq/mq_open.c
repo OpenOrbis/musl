@@ -15,5 +15,10 @@ mqd_t mq_open(const char *name, int flags, ...)
 		attr = va_arg(ap, struct mq_attr *);
 		va_end(ap);
 	}
+#ifdef PS4 //only exists in libkernel_sys.sprx
+	mqd_t kmq_open(const char* name, int flags, ...);
+	return kmq_open(name, flags, mode, attr);
+#else
 	return syscall(SYS_mq_open, name, flags, mode, attr);
+#endif
 }

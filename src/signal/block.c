@@ -28,6 +28,27 @@ static const unsigned long app_mask[] = {
 #endif
 };
 
+//XXX: are these masks correct for PS4? signal numbers are different
+
+#ifdef PS4
+
+void __block_all_sigs(void *set)
+{
+	sigprocmask(SIG_BLOCK, &all_mask, set);
+}
+
+void __block_app_sigs(void *set)
+{
+	sigprocmask(SIG_BLOCK, &app_mask, set);
+}
+
+void __restore_sigs(void *set)
+{
+	sigprocmask(SIG_SETMASK, set, 0);
+}
+
+#else
+
 void __block_all_sigs(void *set)
 {
 	__syscall(SYS_rt_sigprocmask, SIG_BLOCK, &all_mask, set, _NSIG/8);
@@ -42,3 +63,5 @@ void __restore_sigs(void *set)
 {
 	__syscall(SYS_rt_sigprocmask, SIG_SETMASK, set, 0, _NSIG/8);
 }
+
+#endif

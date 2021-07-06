@@ -1,6 +1,7 @@
 #include <time.h>
 #include "syscall.h"
 
+#ifndef PS4
 int clock_getres(clockid_t clk, struct timespec *ts)
 {
 #ifdef SYS_clock_getres_time64
@@ -19,3 +20,4 @@ int clock_getres(clockid_t clk, struct timespec *ts)
 	 * 32-bit arch and we can get result directly into timespec. */
 	return syscall(SYS_clock_getres, clk, ts);
 }
+#endif

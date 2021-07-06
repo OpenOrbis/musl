@@ -136,8 +136,7 @@ static void static_init_tls(size_t *aux)
 #ifndef SYS_mmap2
 #define SYS_mmap2 SYS_mmap
 #endif
-		mem = (void *)__syscall(
-			SYS_mmap2,
+		mem = (void *)mmap(
 			0, libc.tls_size, PROT_READ|PROT_WRITE,
 			MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
 		/* -4095...-1 cast to void * will crash on dereference anyway,

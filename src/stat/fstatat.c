@@ -8,6 +8,8 @@
 #include "syscall.h"
 #include "kstat.h"
 
+#ifndef PS4 //only defined in libkernel_sys.sprx
+
 struct statx {
 	uint32_t stx_mask;
 	uint32_t stx_blksize;
@@ -149,4 +151,6 @@ int fstatat(int fd, const char *restrict path, struct stat *restrict st, int fla
 
 #if !_REDIR_TIME64
 weak_alias(fstatat, fstatat64);
+#endif
+
 #endif

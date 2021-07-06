@@ -46,10 +46,14 @@ void __init_libc(char **envp, char *pn)
 
 	struct pollfd pfd[3] = { {.fd=0}, {.fd=1}, {.fd=2} };
 	int r =
+#ifdef PS4
+	poll(pfd, 3, 0);
+#else
 #ifdef SYS_poll
 	__syscall(SYS_poll, pfd, 3, 0);
 #else
 	__syscall(SYS_ppoll, pfd, 3, &(struct timespec){0}, 0, _NSIG/8);
+#endif
 #endif
 	if (r<0) a_crash();
 	for (i=0; i<3; i++) if (pfd[i].revents&POLLNVAL)

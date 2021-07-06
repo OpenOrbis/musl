@@ -17,11 +17,24 @@ char *tmpnam(char *buf)
 	int r;
 	for (try=0; try<MAXTRIES; try++) {
 		__randname(s+12);
+#ifdef PS4
+
+		{
+			int errno1 = errno;
+			int rr = stat(s, &(struct stat){0});
+			r = (rr < 0) ? errno : rr;
+			errno = errno1;
+		}
+
+#else
+
 #ifdef SYS_lstat
 		r = __syscall(SYS_lstat, s, &(struct kstat){0});
 #else
 		r = __syscall(SYS_fstatat, AT_FDCWD, s,
 			&(struct kstat){0}, AT_SYMLINK_NOFOLLOW);
+#endif
+
 #endif
 		if (r == -ENOENT) return strcpy(buf ? buf : internal, s);
 	}

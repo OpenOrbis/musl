@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include "syscall.h"
 
+#ifndef PS4 //defined only in libkernel_sys.sprx
 long ptrace(int req, ...)
 {
 	va_list ap;
@@ -27,3 +28,4 @@ long ptrace(int req, ...)
 	if (ret < 0 || req-1U >= 3) return ret;
 	return result;
 }
+#endif

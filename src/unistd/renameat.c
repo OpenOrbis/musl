@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "syscall.h"
 
+#ifndef PS4 //only in libkernel_sys.sprx
 int renameat(int oldfd, const char *old, int newfd, const char *new)
 {
 #ifdef SYS_renameat
@@ -9,3 +10,4 @@ int renameat(int oldfd, const char *old, int newfd, const char *new)
 	return syscall(SYS_renameat2, oldfd, old, newfd, new, 0);
 #endif
 }
+#endif

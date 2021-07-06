@@ -6,6 +6,8 @@
 #include <limits.h>
 #include <pthread.h>
 
+#ifndef PS4 //these are syscalls on PS4
+
 char *__shm_mapname(const char *name, char *buf)
 {
 	char *p;
@@ -41,3 +43,5 @@ int shm_unlink(const char *name)
 	if (!(name = __shm_mapname(name, buf))) return -1;
 	return unlink(name);
 }
+
+#endif

@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include "syscall.h"
 
+#ifndef PS4 //only in libkernel_sys.sprx
 int link(const char *existing, const char *new)
 {
 #ifdef SYS_link
@@ -10,3 +11,4 @@ int link(const char *existing, const char *new)
 	return syscall(SYS_linkat, AT_FDCWD, existing, AT_FDCWD, new, 0);
 #endif
 }
+#endif

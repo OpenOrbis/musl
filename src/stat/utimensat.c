@@ -7,6 +7,8 @@
 #define IS32BIT(x) !((x)+0x80000000ULL>>32)
 #define NS_SPECIAL(ns) ((ns)==UTIME_NOW || (ns)==UTIME_OMIT)
 
+#ifndef PS4
+
 int utimensat(int fd, const char *path, const struct timespec times[2], int flags)
 {
 	int r;
@@ -62,3 +64,14 @@ int utimensat(int fd, const char *path, const struct timespec times[2], int flag
 #endif
 	return __syscall_ret(r);
 }
+
+#else //only in libkernel_sys.sprx
+
+int futimesat(int fd, const char* path, const struct timespec times[2]);
+
+int utimensat(int fd, const char *path, const struct timespec times[2], int flags)
+{
+    return futimesat(fd, path, times);
+}
+
+#endif

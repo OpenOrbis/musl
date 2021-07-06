@@ -7,6 +7,11 @@
 
 pid_t wait4(pid_t pid, int *status, int options, struct rusage *ru)
 {
+#ifdef PS4
+	pid_t _wait4(pid_t, int*, int, struct rusage*);
+	return _wait4(pid, status, options, ru);
+#else
+
 	int r;
 #ifdef SYS_wait4_time64
 	if (ru) {
@@ -36,4 +41,6 @@ pid_t wait4(pid_t pid, int *status, int options, struct rusage *ru)
 			{ .tv_sec = kru[2], .tv_usec = kru[3] };
 	}
 	return __syscall_ret(r);
+
+#endif
 }

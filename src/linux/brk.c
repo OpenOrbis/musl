@@ -5,5 +5,6 @@
 
 int brk(void *end)
 {
-	return __syscall_ret(-ENOMEM);
+	errno = ENOMEM;
+	return -1;
 }

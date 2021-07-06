@@ -11,6 +11,30 @@ static void dummy(int x)
 
 weak_alias(dummy, __fork_handler);
 
+#ifdef PS4
+
+__attribute__((naked)) pid_t rfork(int flags)
+{
+    __asm__ volatile(
+        ".intel_syntax noprefix\n"
+        "mov rsi, rsp\n"
+        "lea rdx, [rip+.L1]\n"
+        "jmp rfork_thread@PLT\n"
+        ".L1:\n"
+        "xor eax, eax\n"
+        "add rsp, 8\n"
+        "ret\n"
+        ".att_syntax prefix\n"
+    );
+}
+
+pid_t fork(void)
+{
+    return rfork(0);
+}
+
+#else
+
 pid_t fork(void)
 {
 	pid_t ret;
@@ -35,3 +59,5 @@ pid_t fork(void)
 	__fork_handler(!ret);
 	return __syscall_ret(ret);
 }
+
+#endif

@@ -4,6 +4,8 @@
 #include "syscall.h"
 #include "pthread_impl.h"
 
+#ifndef PS4
+
 struct ctx {
 	int fd;
 	const char *filename;
@@ -54,3 +56,13 @@ int faccessat(int fd, const char *filename, int amode, int flag)
 
 	return __syscall_ret(ret);
 }
+
+#else
+
+int faccessat(int fd, const char* filename, int amode, int flag)
+{
+	errno = ENOSYS;
+	return -1;
+}
+
+#endif

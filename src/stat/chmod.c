@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include "syscall.h"
 
+#ifndef PS4
 int chmod(const char *path, mode_t mode)
 {
 #ifdef SYS_chmod
@@ -10,3 +11,4 @@ int chmod(const char *path, mode_t mode)
 	return syscall(SYS_fchmodat, AT_FDCWD, path, mode);
 #endif
 }
+#endif

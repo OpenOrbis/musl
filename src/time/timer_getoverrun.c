@@ -8,5 +8,10 @@ int timer_getoverrun(timer_t t)
 		pthread_t td = (void *)((uintptr_t)t << 1);
 		t = (void *)(uintptr_t)(td->timer_id & INT_MAX);
 	}
+#ifdef PS4
+	int ktimer_getoverrun(timer_t);
+	return ktimer_getoverrun(t);
+#else
 	return syscall(SYS_timer_getoverrun, t);
+#endif
 }

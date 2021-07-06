@@ -17,11 +17,19 @@ int open(const char *filename, int flags, ...)
 		va_end(ap);
 	}
 
-	int fd = __sys_open_cp(filename, flags, mode);
+	int fd;
+#ifndef PS4
+	fd = __syscall_ret(__sys_open_cp(filename, flags, mode));
+#else
+	{
+		int _open(const char*, int, mode_t);
+		fd = _open(filename, flags, mode);
+	}
+#endif
 	if (fd>=0 && (flags & O_CLOEXEC))
-		__syscall(SYS_fcntl, fd, F_SETFD, FD_CLOEXEC);
+		fcntl(fd, F_SETFD, FD_CLOEXEC);
 
-	return __syscall_ret(fd);
+	return fd;
 }
 
 weak_alias(open, open64);

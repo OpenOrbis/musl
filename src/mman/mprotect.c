@@ -2,6 +2,8 @@
 #include "libc.h"
 #include "syscall.h"
 
+#ifndef PS4
+
 int __mprotect(void *addr, size_t len, int prot)
 {
 	size_t start, end;
@@ -11,3 +13,14 @@ int __mprotect(void *addr, size_t len, int prot)
 }
 
 weak_alias(__mprotect, mprotect);
+
+#else
+
+int mprotect(void* addr, size_t len, int prot);
+
+int __mprotect(void* addr, size_t len, int prot)
+{
+	return mprotect(addr, len, prot);
+}
+
+#endif

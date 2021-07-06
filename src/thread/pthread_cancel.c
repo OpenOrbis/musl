@@ -14,6 +14,8 @@ long __cancel()
 	return -ECANCELED;
 }
 
+#ifndef PS4
+
 long __syscall_cp_asm(volatile void *, syscall_arg_t,
                       syscall_arg_t, syscall_arg_t, syscall_arg_t,
                       syscall_arg_t, syscall_arg_t, syscall_arg_t);
@@ -36,6 +38,8 @@ long __syscall_cp_c(syscall_arg_t nr,
 		r = __cancel();
 	return r;
 }
+
+#endif
 
 static void _sigaddset(sigset_t *set, int sig)
 {
@@ -64,7 +68,14 @@ static void cancel_handler(int sig, siginfo_t *si, void *ctx)
 		return;
 	}
 
+#ifdef PS4
+	{
+		int thr_kill(thread_t, int);
+		thr_kill(self->tid, SIGCANCEL);
+	}
+#else
 	__syscall(SYS_tkill, self->tid, SIGCANCEL);
+#endif
 }
 
 void __testcancel()

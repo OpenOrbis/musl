@@ -3,6 +3,7 @@
 #include <signal.h>
 #include "syscall.h"
 
+#ifndef PS4
 int poll(struct pollfd *fds, nfds_t n, int timeout)
 {
 #ifdef SYS_poll
@@ -13,3 +14,4 @@ int poll(struct pollfd *fds, nfds_t n, int timeout)
 		.tv_nsec = timeout%1000*1000000 }) : 0, 0, _NSIG/8);
 #endif
 }
+#endif

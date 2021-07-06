@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include "syscall.h"
 
+#ifndef PS4
 int rename(const char *old, const char *new)
 {
 #if defined(SYS_rename)
@@ -12,3 +13,4 @@ int rename(const char *old, const char *new)
 	return syscall(SYS_renameat2, AT_FDCWD, old, AT_FDCWD, new, 0);
 #endif
 }
+#endif

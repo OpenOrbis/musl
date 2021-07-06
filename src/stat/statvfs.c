@@ -1,6 +1,11 @@
 #include <sys/statvfs.h>
 #include <sys/statfs.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
 #include "syscall.h"
+
+#ifndef PS4
 
 static int __statfs(const char *path, struct statfs *buf)
 {
@@ -24,6 +29,31 @@ static int __fstatfs(int fd, struct statfs *buf)
 
 weak_alias(__statfs, statfs);
 weak_alias(__fstatfs, fstatfs);
+
+#else
+
+int fstatfs(int fd, struct statfs* buf);
+
+static int __fstatfs(int fd, struct statfs* buf)
+{
+	return fstatfs(fd, buf);
+}
+
+int statfs(const char* path, struct statfs* buf)
+{
+	int fd = open(path, O_PATH|O_RDONLY);
+	if(fd < 0)
+		return -1;
+	int rv = fstatfs(fd, buf);
+	int errno1 = errno;
+	close(fd);
+	errno = errno1;
+	return fd;
+}
+
+#define __statfs statfs
+
+#endif
 
 #ifndef PS4
 static void fixup(struct statvfs *out, const struct statfs *in)
@@ -67,4 +97,4 @@ int fstatvfs(int fd, struct statvfs *buf)
 weak_alias(statvfs, statvfs64);
 weak_alias(statfs, statfs64);
 weak_alias(fstatvfs, fstatvfs64);
-weak_alias(fstatfs, fstatfs64);
+weak_alias(__fstatfs, fstatfs64);

@@ -9,7 +9,7 @@ int isatty(int fd)
 #ifndef PS4
 	unsigned long r = syscall(SYS_ioctl, fd, TIOCGWINSZ, &wsz);
 #else
-	unsigned long r = syscall(SYS_ioctl, fd, LINUX_TIOCGWINSZ, &wsz);
+	unsigned long r = ioctl(fd, LINUX_TIOCGWINSZ, &wsz);
 #endif
 	if (r == 0) return 1;
 	if (errno != EBADF) errno = ENOTTY;

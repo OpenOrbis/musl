@@ -2,6 +2,7 @@
 #include <errno.h>
 #include "syscall.h"
 
+#ifndef PS4
 int pthread_sigmask(int how, const sigset_t *restrict set, sigset_t *restrict old)
 {
 	int ret;
@@ -17,3 +18,4 @@ int pthread_sigmask(int how, const sigset_t *restrict set, sigset_t *restrict ol
 	}
 	return ret;
 }
+#endif

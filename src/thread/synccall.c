@@ -77,7 +77,12 @@ void __synccall(void (*func)(void *), void *ctx)
 
 	for (td=self->next; td!=self; td=td->next) {
 		target_tid = td->tid;
+#ifdef PS4
+		int thr_kill(long, int);
+		while ((thr_kill(td->tid, SIGSYNCCALL)) == -1 && errno == EAGAIN);
+#else
 		while ((r = -__syscall(SYS_tkill, td->tid, SIGSYNCCALL)) == EAGAIN);
+#endif
 		if (r) {
 			/* If we failed to signal any thread, nop out the
 			 * callback to abort the synccall and just release

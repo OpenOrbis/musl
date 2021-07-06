@@ -68,13 +68,21 @@ static void *start(void *arg)
 #ifndef PS4
 	__syscall(SYS_timer_delete, self->timer_id & INT_MAX);
 #else
-	__syscall(SYS_ktimer_delete, self->timer_id & INT_MAX);
+	{
+		int ktimer_delete(int);
+		ktimer_delete(self->timer_id & INT_MAX);
+	}
 #endif
 	return 0;
 }
 
 int timer_create(clockid_t clk, struct sigevent *restrict evp, timer_t *restrict res)
 {
+#ifdef PS4
+	int ktimer_create(clockid_t, struct ksigevent*, int*);
+#else
+	#define ktimer_create(...) syscall(SYS_timer_create, ...)
+#endif
 	static pthread_once_t once = PTHREAD_ONCE_INIT;
 	pthread_t td;
 	pthread_attr_t attr;
@@ -94,7 +102,7 @@ int timer_create(clockid_t clk, struct sigevent *restrict evp, timer_t *restrict
 			ksev.sigev_tid = 0;
 			ksevp = &ksev;
 		}
-		if (syscall(SYS_timer_create, clk, ksevp, &timerid) < 0)
+		if (ktimer_create(clk, ksevp, &timerid) < 0)
 			return -1;
 		*res = (void *)(intptr_t)timerid;
 		break;
@@ -109,7 +117,7 @@ int timer_create(clockid_t clk, struct sigevent *restrict evp, timer_t *restrict
 		args.sev = evp;
 
 		__block_app_sigs(&set);
-		__syscall(SYS_rt_sigprocmask, SIG_BLOCK, SIGTIMER_SET, 0, _NSIG/8);
+		sigprocmask(SIG_BLOCK, SIGTIMER_SET, 0);
 		r = pthread_create(&td, &attr, start, &args);
 		__restore_sigs(&set);
 		if (r) {
@@ -121,7 +129,7 @@ int timer_create(clockid_t clk, struct sigevent *restrict evp, timer_t *restrict
 		ksev.sigev_signo = SIGTIMER;
 		ksev.sigev_notify = 4; /* SIGEV_THREAD_ID */
 		ksev.sigev_tid = td->tid;
-		if (syscall(SYS_timer_create, clk, &ksev, &timerid) < 0)
+		if (ktimer_create(clk, &ksev, &timerid) < 0)
 			timerid = -1;
 		td->timer_id = timerid;
 		pthread_barrier_wait(&args.b);

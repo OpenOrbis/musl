@@ -181,7 +181,11 @@ static void cleanup(void *ctx)
 			.si_uid = getuid()
 		};
 
+#ifdef PS4
+#warning "rt_sigqueuinfo not supported on PS4"
+#else
 		__syscall(SYS_rt_sigqueueinfo, si.si_pid, si.si_signo, &si);
+#endif
 	}
 	if (sev.sigev_notify == SIGEV_THREAD) {
 		a_store(&__pthread_self()->cancel, 0);

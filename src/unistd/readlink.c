@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include "syscall.h"
 
+#ifndef PS4 //only in libkernel_sys.sprx
 ssize_t readlink(const char *restrict path, char *restrict buf, size_t bufsize)
 {
 #ifdef SYS_readlink
@@ -10,3 +11,4 @@ ssize_t readlink(const char *restrict path, char *restrict buf, size_t bufsize)
 	return syscall(SYS_readlinkat, AT_FDCWD, path, buf, bufsize);
 #endif
 }
+#endif

@@ -4,6 +4,7 @@
 #include "syscall.h"
 #include "kstat.h"
 
+#ifndef PS4 //only defined in libkernel_sys.sprx
 int fchmodat(int fd, const char *path, mode_t mode, int flag)
 {
 	if (!flag) return syscall(SYS_fchmodat, fd, path, mode, flag);
@@ -36,3 +37,4 @@ int fchmodat(int fd, const char *path, mode_t mode, int flag)
 	__syscall(SYS_close, fd2);
 	return __syscall_ret(ret);
 }
+#endif

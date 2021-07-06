@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include "syscall.h"
 
+#ifndef PS4 //only in libkernel_sys.sprx
 int fchdir(int fd)
 {
 	int ret = __syscall(SYS_fchdir, fd);
@@ -13,3 +14,4 @@ int fchdir(int fd)
 	__procfdname(buf, fd);
 	return syscall(SYS_chdir, buf);
 }
+#endif

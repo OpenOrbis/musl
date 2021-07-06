@@ -85,8 +85,11 @@ int pthread_barrier_wait(pthread_barrier_t *b)
 			a_spin();
 		a_inc(&inst->finished);
 		while (inst->finished == 1)
+#ifndef PS4
 			__syscall(SYS_futex,&inst->finished,FUTEX_WAIT|FUTEX_PRIVATE,1,0) != -ENOSYS
-			|| __syscall(SYS_futex,&inst->finished,FUTEX_WAIT,1,0);
+			|| __syscall(SYS_futex,&inst->finished,FUTEX_WAIT,1,0)
+#endif
+			;
 		return PTHREAD_BARRIER_SERIAL_THREAD;
 	}
 

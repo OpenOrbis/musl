@@ -4,6 +4,7 @@
 
 #define IS32BIT(x) !((x)+0x80000000ULL>>32)
 
+#ifndef PS4
 int setitimer(int which, const struct itimerval *restrict new, struct itimerval *restrict old)
 {
 	if (sizeof(time_t) > sizeof(long)) {
@@ -24,3 +25,4 @@ int setitimer(int which, const struct itimerval *restrict new, struct itimerval 
 	}
 	return syscall(SYS_setitimer, which, new, old);
 }
+#endif

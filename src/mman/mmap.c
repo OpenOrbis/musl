@@ -11,6 +11,8 @@ weak_alias(dummy, __vm_wait);
 #define UNIT SYSCALL_MMAP2_UNIT
 #define OFF_MASK ((-0x2000ULL << (8*sizeof(syscall_arg_t)-1)) | (UNIT-1))
 
+#ifndef PS4
+
 void *__mmap(void *start, size_t len, int prot, int flags, int fd, off_t off)
 {
 	long ret;
@@ -39,3 +41,16 @@ void *__mmap(void *start, size_t len, int prot, int flags, int fd, off_t off)
 weak_alias(__mmap, mmap);
 
 weak_alias(mmap, mmap64);
+
+#else
+
+void* mmap(void*, size_t, int, int, int, off_t);
+
+void* __mmap(void* start, size_t len, int prot, int flags, int fd, off_t off)
+{
+	return mmap(start, len, prot, flags, fd, off);
+}
+
+weak_alias(__mmap, mmap64);
+
+#endif

@@ -14,7 +14,15 @@ char *getcwd(char *buf, size_t size)
 		errno = EINVAL;
 		return 0;
 	}
-	long ret = syscall(SYS_getcwd, buf, size);
+	long ret;
+#ifdef PS4 //only in libkernel_sys.sprx
+	{
+		size_t __getcwd(char*, size_t);
+		ret = __getcwd(buf, size);
+	}
+#else
+	ret = syscall(SYS_getcwd, buf, size);
+#endif
 	if (ret < 0)
 		return 0;
 	if (ret == 0 || buf[0] != '/') {

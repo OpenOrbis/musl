@@ -5,7 +5,9 @@
 
 #include "crt_arch.h"
 
+#ifndef main
 int main();
+#endif
 weak void _init();
 weak void _fini();
 int __libc_start_main(int (*)(), int, char **,

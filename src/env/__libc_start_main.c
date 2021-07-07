@@ -7,8 +7,9 @@
 #include "atomic.h"
 #include "libc.h"
 
-static void dummy(void) {}
+static int dummy(void) { return 0; }
 weak_alias(dummy, _init);
+weak_alias(dummy, _fini);
 
 extern weak hidden void (*const __init_array_start)(void), (*const __init_array_end)(void);
 

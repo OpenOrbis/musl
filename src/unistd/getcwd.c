@@ -15,11 +15,16 @@ char *getcwd(char *buf, size_t size)
 		return 0;
 	}
 	long ret;
-#ifdef PS4 //only in libkernel_sys.sprx
+#ifdef PS4
+#ifdef PS4_LIBKERNEL_SYS
 	{
 		size_t __getcwd(char*, size_t);
 		ret = __getcwd(buf, size);
 	}
+#else
+	errno = ENOSYS;
+	return -1;
+#endif
 #else
 	ret = syscall(SYS_getcwd, buf, size);
 #endif

@@ -60,6 +60,17 @@ static int child(void *args_vp)
 	 * memory, with unpredictable and dangerous results. To
 	 * reduce overhead, sigaction has tracked for us which signals
 	 * potentially have a signal handler. */
+#ifdef PS4
+	for (i = 1; i < _NSIG; i++) {
+		struct sigaction sa;
+		__libc_sigaction(i, 0, &sa);
+		if(sa.sa_handler != SIG_IGN)
+		{
+			sa.sa_handler = SIG_DFL;
+			__libc_sigaction(i, &sa, 0);
+		}
+	}
+#else
 	__get_handler_set(&hset);
 	for (i=1; i<_NSIG; i++) {
 		if ((attr->__flags & POSIX_SPAWN_SETSIGDEF)
@@ -78,6 +89,7 @@ static int child(void *args_vp)
 		}
 		__libc_sigaction(i, &sa, 0);
 	}
+#endif
 
 	if (attr->__flags & POSIX_SPAWN_SETSID)
 		if ((ret=setsid()) < 0)
@@ -91,8 +103,13 @@ static int child(void *args_vp)
 	 * to do a multi-threaded synchronized id-change, which would
 	 * trash the parent's state. */
 	if (attr->__flags & POSIX_SPAWN_RESETIDS)
+#ifdef PS4
 		if ((ret=setgid(getgid())) ||
 		    (ret=setuid(getuid())) )
+#else
+		if ((ret=syscall(SYS_setgid, syscall(SYS_getgid))) ||
+		    (ret=syscall(SYS_setuid, syscall(SYS_getuid))))
+#endif
 			goto fail;
 
 	if (fa && fa->__actions) {

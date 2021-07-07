@@ -28,15 +28,14 @@ static int __fstatfs(int fd, struct statfs *buf)
 }
 
 weak_alias(__statfs, statfs);
-weak_alias(__fstatfs, fstatfs);
 
 #else
 
-int fstatfs(int fd, struct statfs* buf);
+int _fstatfs(int fd, struct statfs* buf);
 
 static int __fstatfs(int fd, struct statfs* buf)
 {
-	return fstatfs(fd, buf);
+	return _fstatfs(fd, buf);
 }
 
 int statfs(const char* path, struct statfs* buf)
@@ -54,6 +53,8 @@ int statfs(const char* path, struct statfs* buf)
 #define __statfs statfs
 
 #endif
+
+weak_alias(__fstatfs, fstatfs);
 
 #ifndef PS4
 static void fixup(struct statvfs *out, const struct statfs *in)

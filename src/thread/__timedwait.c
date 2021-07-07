@@ -70,6 +70,8 @@ int __timedwait_cp(volatile int *addr, int val,
 #endif
 }
 
+#ifndef PS4
+
 int __timedwait(volatile int *addr, int val,
 	clockid_t clk, const struct timespec *at, int priv)
 {
@@ -79,3 +81,5 @@ int __timedwait(volatile int *addr, int val,
 	__pthread_setcancelstate(cs, 0);
 	return r;
 }
+
+#endif

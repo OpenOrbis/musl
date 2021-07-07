@@ -65,9 +65,17 @@ int utimensat(int fd, const char *path, const struct timespec times[2], int flag
 	return __syscall_ret(r);
 }
 
-#else //only in libkernel_sys.sprx
+#else
 
-int futimesat(int fd, const char* path, const struct timespec times[2]);
+int futimesat(int fd, const char* path, const struct timespec times[2])
+#ifdef PS4_LIBKERNEL_SYS
+;
+#else
+{
+	errno = ENOSYS;
+	return -1;
+}
+#endif
 
 int utimensat(int fd, const char *path, const struct timespec times[2], int flags)
 {

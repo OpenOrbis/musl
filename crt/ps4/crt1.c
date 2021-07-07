@@ -18,6 +18,5 @@ void _start_ps4_c(long *p)
 {
 	int argc = p[0];
 	char **argv = (void *)(p+1);
-	libc.threads_minus_1 = 1;
 	__libc_start_main(main, argc, argv, _init, _fini, 0);
 }

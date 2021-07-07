@@ -21,8 +21,13 @@ ssize_t mq_timedreceive(mqd_t mqd, char *restrict msg, size_t len, unsigned *res
 #else
 
 #ifdef PS4
+#ifndef PS4_LIBKERNEL_SYS
+	errno = ENOSYS;
+	return -1;
+#else
 	ssize_t kmq_timedreceive(mqd_t mqd, char *restrict msg, size_t len, unsigned *restrict prio, const struct timespec *restrict at);
 	return kmq_timedreceive(mqd, msg, len, prio, at);
+#endif
 #else
 	return syscall_cp(SYS_mq_timedreceive, mqd, msg, len, prio, at);
 #endif

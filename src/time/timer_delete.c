@@ -8,8 +8,7 @@ int timer_delete(timer_t t)
 		pthread_t td = (void *)((uintptr_t)t << 1);
 		a_store(&td->timer_id, td->timer_id | INT_MIN);
 #ifdef PS4
-		int thr_kill(long, int);
-		thr_kill(td->tid, SIGTIMER);
+		pthread_kill(td, SIGTIMER);
 #else
 		__syscall(SYS_tkill, td->tid, SIGTIMER);
 #endif

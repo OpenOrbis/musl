@@ -41,6 +41,8 @@ static void handler(int sig)
 	errno = old_errno;
 }
 
+#ifndef PS4
+
 void __synccall(void (*func)(void *), void *ctx)
 {
 	sigset_t oldmask;
@@ -122,3 +124,5 @@ single_threaded:
 	__tl_unlock();
 	__restore_sigs(&oldmask);
 }
+
+#endif

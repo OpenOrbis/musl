@@ -43,7 +43,11 @@ static void do_setrlimit(void *p)
 int setrlimit(int resource, const struct rlimit *rlim)
 {
 	struct ctx c = { .res = resource, .rlim = rlim, .err = -1 };
+#ifdef PS4
+	do_setrlimit(&c);
+#else
 	__synccall(do_setrlimit, &c);
+#endif
 	if (c.err) {
 		if (c.err>0) errno = c.err;
 		return -1;

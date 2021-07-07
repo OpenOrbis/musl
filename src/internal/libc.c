@@ -1,6 +1,10 @@
 #include "libc.h"
 
-struct __libc __libc;
+struct __libc __libc
+#ifdef PS4
+	= {.threads_minus_1 = 1}
+#endif
+;
 
 size_t __hwcap;
 char *__progname=0, *__progname_full=0;

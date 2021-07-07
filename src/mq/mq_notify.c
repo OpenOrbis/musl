@@ -29,11 +29,20 @@ static void *start(void *p)
 	return 0;
 }
 
+#ifdef PS4
+#ifdef PS4_LIBKERNEL_SYS
+int kmq_notify(mqd_t, const struct sigevent*);
+#else
+static int kmq_notify(mqd_t mqd, const struct sigevent* sev)
+{
+	errno = ENOSYS;
+	return -1;
+}
+#endif
+#endif
+
 int mq_notify(mqd_t mqd, const struct sigevent *sev)
 {
-#ifdef PS4 //only in libkernel_sys.sprx
-	int kmq_notify(mqd_t, const struct sigevent*);
-#endif
 	struct args args = { .sev = sev };
 	pthread_attr_t attr;
 	pthread_t td;

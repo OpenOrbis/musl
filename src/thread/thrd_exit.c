@@ -4,5 +4,5 @@
 
 _Noreturn void thrd_exit(int result)
 {
-	__pthread_exit((void*)(intptr_t)result);
+	pthread_exit((void*)(intptr_t)result);
 }

@@ -2,10 +2,15 @@
 #include <errno.h>
 #include "syscall.h"
 
-#ifndef PS4 //only in libkernel_sys.sprx
+#ifndef PS4_LIBKERNEL_SYS
 int swapon(const char *path, int flags)
 {
+#ifndef PS4
 	return syscall(SYS_swapon, path, flags);
+#else
+	errno = ENOSYS;
+	return -1;
+#endif
 }
 #endif
 

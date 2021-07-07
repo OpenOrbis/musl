@@ -6,7 +6,7 @@
 
 int setresuid(uid_t ruid, uid_t euid, uid_t suid)
 {
-#ifdef PS4
+#ifndef PS4
 	return __setxid(SYS_setresuid, ruid, euid, suid);
 #else
 	errno = ENOSYS;

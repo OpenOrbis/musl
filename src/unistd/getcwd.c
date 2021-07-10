@@ -23,7 +23,7 @@ char *getcwd(char *buf, size_t size)
 	}
 #else
 	errno = ENOSYS;
-	return -1;
+	return 0;
 #endif
 #else
 	ret = syscall(SYS_getcwd, buf, size);

@@ -209,6 +209,13 @@ long sysconf(int name)
 			for (; set[i]; set[i]&=set[i]-1, cnt++);
 		return cnt;
 	case JT_PHYS_PAGES & 255:
+#ifdef PS4
+	{
+		size_t sceKernelGetDirectMemorySize(void);
+		size_t sz = sceKernelGetDirectMemorySize();
+		return sz >> 14;
+	}
+#endif
 	case JT_AVPHYS_PAGES & 255: ;
 		unsigned long long mem;
 		struct sysinfo si;

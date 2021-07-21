@@ -17,7 +17,7 @@ __attribute__((naked)) long syscall(long n, ...)
        "mov rdi, rsi\n"
        "mov rsi, rdx\n"
        "mov rdx, rcx\n"
-       "mov rcx, r8\n"
+       "mov r10, r8\n"
        "mov r8, r9\n"
        "mov r9, [rsp+8]\n"
        "syscall\n"

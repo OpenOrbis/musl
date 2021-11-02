@@ -92,8 +92,8 @@ struct linger {
 #define SOCK_PACKET    10
 
 #ifndef SOCK_CLOEXEC
-#define SOCK_CLOEXEC   02000000
-#define SOCK_NONBLOCK  04000
+#define SOCK_CLOEXEC   0 // ps4
+#define SOCK_NONBLOCK  0 // ps4
 #endif
 
 #define PF_UNSPEC       0
@@ -365,7 +365,8 @@ struct linger {
 #define SCM_CREDENTIALS 0x02
 
 struct sockaddr {
-	sa_family_t sa_family;
+	unsigned char sa_len;
+	unsigned char sa_family;
 	char sa_data[14];
 };
 

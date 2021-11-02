@@ -56,6 +56,7 @@ int __res_msend_rc(int nqueries, const unsigned char *const *queries,
 		const struct address *iplit = &conf->ns[nns];
 		if (iplit->family == AF_INET) {
 			memcpy(&ns[nns].sin.sin_addr, iplit->addr, 4);
+			ns[nns].sin.sin_len = 0;
 			ns[nns].sin.sin_port = htons(53);
 			ns[nns].sin.sin_family = AF_INET;
 		} else {
@@ -136,6 +137,7 @@ int __res_msend_rc(int nqueries, const unsigned char *const *queries,
 			if (rlen < 4) continue;
 
 			/* Ignore replies from addresses we didn't send to */
+			sa.sin.sin_len = 0;
 			for (j=0; j<nns && memcmp(ns+j, &sa, sl); j++);
 			if (j==nns) continue;
 

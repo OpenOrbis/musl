@@ -121,8 +121,11 @@ int ioctl(int fd, int req, ...)
 	va_start(ap, req);
 	arg = va_arg(ap, void *);
 	va_end(ap);
+#ifdef PS4
+	int _ioctl(int fd, int req, ...);
+	return _ioctl(fd, req, arg);
+#else
 	int r = __syscall(SYS_ioctl, fd, req, arg);
-	#ifndef PS4
 	if (SIOCGSTAMP != SIOCGSTAMP_OLD && req && r==-ENOTTY) {
 		for (int i=0; i<sizeof compat_map/sizeof *compat_map; i++) {
 			if (compat_map[i].new_req != req) continue;
@@ -137,6 +140,6 @@ int ioctl(int fd, int req, ...)
 			break;
 		}
 	}
-	#endif
 	return __syscall_ret(r);
+#endif
 }

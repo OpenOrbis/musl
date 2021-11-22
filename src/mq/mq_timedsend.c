@@ -19,6 +19,18 @@ int mq_timedsend(mqd_t mqd, const char *msg, size_t len, unsigned prio, const st
 	return syscall_cp(SYS_mq_timedsend, mqd, msg, len, prio,
 		at ? ((long[]){CLAMP(s), ns}) : 0);
 #else
+
+#ifdef PS4
+#ifndef PS4_LIBKERNEL_SYS
+	errno = ENOSYS;
+	return -1;
+#else
+	int kmq_timedsend(mqd_t mqd, const char *msg, size_t len, unsigned prio, const struct timespec *at);
+	return kmq_timedsend(mqd, msg, len, prio, at);
+#endif
+#else
 	return syscall_cp(SYS_mq_timedsend, mqd, msg, len, prio, at);
+#endif
+
 #endif
 }

@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include "syscall.h"
 
+#ifndef PS4
 int fchmod(int fd, mode_t mode)
 {
 	int ret = __syscall(SYS_fchmod, fd, mode);
@@ -17,3 +18,4 @@ int fchmod(int fd, mode_t mode)
 	return syscall(SYS_fchmodat, AT_FDCWD, buf, mode);
 #endif
 }
+#endif

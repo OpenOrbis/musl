@@ -41,6 +41,8 @@ static void handler(int sig)
 	errno = old_errno;
 }
 
+#ifndef PS4
+
 void __synccall(void (*func)(void *), void *ctx)
 {
 	sigset_t oldmask;
@@ -77,7 +79,12 @@ void __synccall(void (*func)(void *), void *ctx)
 
 	for (td=self->next; td!=self; td=td->next) {
 		target_tid = td->tid;
+#ifdef PS4
+		int thr_kill(long, int);
+		while ((thr_kill(td->tid, SIGSYNCCALL)) == -1 && errno == EAGAIN);
+#else
 		while ((r = -__syscall(SYS_tkill, td->tid, SIGSYNCCALL)) == EAGAIN);
+#endif
 		if (r) {
 			/* If we failed to signal any thread, nop out the
 			 * callback to abort the synccall and just release
@@ -117,3 +124,5 @@ single_threaded:
 	__tl_unlock();
 	__restore_sigs(&oldmask);
 }
+
+#endif

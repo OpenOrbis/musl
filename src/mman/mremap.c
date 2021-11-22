@@ -30,7 +30,8 @@ void *__mremap(void *old_addr, size_t old_len, size_t new_len, int flags, ...)
 	return (void *)syscall(SYS_mremap, old_addr, old_len, new_len, flags, new_addr);
 #else
 	#pragma message "mremap not supported on PS4."
-	return -1;
+	errno = ENOSYS;
+	return MAP_FAILED;
 #endif
 }
 

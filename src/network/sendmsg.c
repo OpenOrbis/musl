@@ -4,6 +4,7 @@
 #include <errno.h>
 #include "syscall.h"
 
+#ifndef PS4
 ssize_t sendmsg(int fd, const struct msghdr *msg, int flags)
 {
 #if LONG_MAX > INT_MAX
@@ -27,3 +28,4 @@ ssize_t sendmsg(int fd, const struct msghdr *msg, int flags)
 #endif
 	return socketcall_cp(sendmsg, fd, msg, flags, 0, 0, 0);
 }
+#endif

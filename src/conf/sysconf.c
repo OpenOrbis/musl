@@ -198,7 +198,10 @@ long sysconf(int name)
 		unsigned char set[128] = {1};
 		int i, cnt;
 #ifdef PS4
-		__syscall(SYS_cpuset_getaffinity, 0, 0, 0, sizeof set, set);
+		{
+			int cpuset_getaffinity(int, int, id_t, size_t, void*);
+			cpuset_getaffinity(0, 0, 0, sizeof set, set);
+		}
 #else
 		__syscall(SYS_sched_getaffinity, 0, sizeof set, set);
 #endif
@@ -206,6 +209,13 @@ long sysconf(int name)
 			for (; set[i]; set[i]&=set[i]-1, cnt++);
 		return cnt;
 	case JT_PHYS_PAGES & 255:
+#ifdef PS4
+	{
+		size_t sceKernelGetDirectMemorySize(void);
+		size_t sz = sceKernelGetDirectMemorySize();
+		return sz >> 14;
+	}
+#endif
 	case JT_AVPHYS_PAGES & 255: ;
 		unsigned long long mem;
 		struct sysinfo si;

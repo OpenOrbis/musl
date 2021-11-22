@@ -4,6 +4,7 @@
 #include "syscall.h"
 #include "pthread_impl.h"
 
+#ifndef PS4
 int sigqueue(pid_t pid, int sig, const union sigval value)
 {
 	siginfo_t si;
@@ -20,3 +21,4 @@ int sigqueue(pid_t pid, int sig, const union sigval value)
 	__restore_sigs(&set);
 	return r;
 }
+#endif

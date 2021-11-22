@@ -3,5 +3,5 @@
 
 void tss_delete(tss_t key)
 {
-	__pthread_key_delete(key);
+	pthread_key_delete(key);
 }

@@ -6,6 +6,11 @@
 
 int semget(key_t key, int n, int fl)
 {
+#ifdef PS4
+	errno = ENOSYS;
+	return -1;
+#else
+
 	/* The kernel uses the wrong type for the sem_nsems member
 	 * of struct semid_ds, and thus might not check that the
 	 * n fits in the correct (per POSIX) userspace type, so
@@ -15,5 +20,7 @@ int semget(key_t key, int n, int fl)
 	return syscall(SYS_semget, key, n, fl);
 #else
 	return syscall(SYS_ipc, IPCOP_semget, key, n, fl);
+#endif
+
 #endif
 }

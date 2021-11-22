@@ -1,6 +1,7 @@
 #include <sched.h>
 #include "syscall.h"
 
+#ifndef PS4
 int sched_rr_get_interval(pid_t pid, struct timespec *ts)
 {
 #ifdef SYS_sched_rr_get_interval_time64
@@ -19,3 +20,4 @@ int sched_rr_get_interval(pid_t pid, struct timespec *ts)
 	 * 32-bit arch and we can get result directly into timespec. */
 	return syscall(SYS_sched_rr_get_interval, pid, ts);
 }
+#endif

@@ -2,6 +2,7 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 
+#ifndef PS4
 int tcsetpgrp(int fd, pid_t pgrp)
 {
 	int pgrp_int = pgrp;
@@ -11,3 +12,4 @@ int tcsetpgrp(int fd, pid_t pgrp)
 	return ioctl(fd, LINUX_TIOCSPGRP, &pgrp_int);
 #endif
 }
+#endif

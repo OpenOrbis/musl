@@ -13,13 +13,15 @@ int pipe2(int fd[2], int flag)
 #endif
 	ret = pipe(fd);
 	if (ret) return ret;
+	int errno1 = errno;
 	if (flag & O_CLOEXEC) {
-		__syscall(SYS_fcntl, fd[0], F_SETFD, FD_CLOEXEC);
-		__syscall(SYS_fcntl, fd[1], F_SETFD, FD_CLOEXEC);
+		fcntl(fd[0], F_SETFD, FD_CLOEXEC);
+		fcntl(fd[1], F_SETFD, FD_CLOEXEC);
 	}
 	if (flag & O_NONBLOCK) {
-		__syscall(SYS_fcntl, fd[0], F_SETFL, O_NONBLOCK);
-		__syscall(SYS_fcntl, fd[1], F_SETFL, O_NONBLOCK);
+		fcntl(fd[0], F_SETFL, O_NONBLOCK);
+		fcntl(fd[1], F_SETFL, O_NONBLOCK);
 	}
+	errno = errno1;
 	return 0;
 }

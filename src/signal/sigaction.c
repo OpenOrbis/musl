@@ -7,6 +7,8 @@
 #include "lock.h"
 #include "ksigaction.h"
 
+#ifndef PS4
+
 static volatile int dummy_lock[1] = { 0 };
 
 extern hidden volatile int __abort_lock[1];
@@ -91,3 +93,16 @@ int __sigaction(int sig, const struct sigaction *restrict sa, struct sigaction *
 }
 
 weak_alias(__sigaction, sigaction);
+
+#else
+
+int sigaction(int sig, const struct sigaction* restrict sa, struct sigaction* restrict old);
+
+int __sigaction(int sig, const struct sigaction* restrict sa, struct sigaction* restrict old)
+{
+    return sigaction(sig, sa, old);
+}
+
+weak_alias(__sigaction, __libc_sigaction);
+
+#endif

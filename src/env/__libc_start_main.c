@@ -7,8 +7,9 @@
 #include "atomic.h"
 #include "libc.h"
 
-static void dummy(void) {}
+static int dummy(void) { return 0; }
 weak_alias(dummy, _init);
+weak_alias(dummy, _fini);
 
 extern weak hidden void (*const __init_array_start)(void), (*const __init_array_end)(void);
 
@@ -46,10 +47,14 @@ void __init_libc(char **envp, char *pn)
 
 	struct pollfd pfd[3] = { {.fd=0}, {.fd=1}, {.fd=2} };
 	int r =
+#ifdef PS4
+	poll(pfd, 3, 0);
+#else
 #ifdef SYS_poll
 	__syscall(SYS_poll, pfd, 3, 0);
 #else
 	__syscall(SYS_ppoll, pfd, 3, &(struct timespec){0}, 0, _NSIG/8);
+#endif
 #endif
 	if (r<0) a_crash();
 	for (i=0; i<3; i++) if (pfd[i].revents&POLLNVAL)

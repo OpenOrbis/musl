@@ -1,6 +1,7 @@
 #include "stdio_impl.h"
 #include <fcntl.h>
 #include <string.h>
+#include <errno.h>
 
 FILE *__fopen_rb_ca(const char *filename, FILE *f, unsigned char *buf, size_t len)
 {
@@ -8,7 +9,11 @@ FILE *__fopen_rb_ca(const char *filename, FILE *f, unsigned char *buf, size_t le
 
 	f->fd = sys_open(filename, O_RDONLY|O_CLOEXEC);
 	if (f->fd < 0) return 0;
-	__syscall(SYS_fcntl, f->fd, F_SETFD, FD_CLOEXEC);
+	{
+		int errno1 = errno;
+		fcntl(f->fd, F_SETFD, FD_CLOEXEC);
+		errno = errno1;
+	}
 
 	f->flags = F_NOWR | F_PERM;
 	f->buf = buf + UNGET;

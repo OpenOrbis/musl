@@ -15,6 +15,11 @@
 
 int semtimedop(int id, struct sembuf *buf, size_t n, const struct timespec *ts)
 {
+#ifdef PS4
+	errno = ENOSYS;
+	return -1;
+#else
+
 #ifdef SYS_semtimedop_time64
 	time_t s = ts ? ts->tv_sec : 0;
 	long ns = ts ? ts->tv_nsec : 0;
@@ -31,5 +36,7 @@ int semtimedop(int id, struct sembuf *buf, size_t n, const struct timespec *ts)
 	return syscall(SYS_semtimedop, id, buf, n, ts);
 #else
 	return __syscall_ret(-ENOSYS);
+#endif
+
 #endif
 }

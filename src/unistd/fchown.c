@@ -3,8 +3,16 @@
 #include <fcntl.h>
 #include "syscall.h"
 
+#ifndef PS4_LIBKERNEL_SYS
+
 int fchown(int fd, uid_t uid, gid_t gid)
 {
+#ifdef PS4
+
+	errno = ENOSYS;
+	return -1;
+
+#else
 	int ret = __syscall(SYS_fchown, fd, uid, gid);
 	if (ret != -EBADF || __syscall(SYS_fcntl, fd, F_GETFD) < 0)
 		return __syscall_ret(ret);
@@ -17,4 +25,7 @@ int fchown(int fd, uid_t uid, gid_t gid)
 	return syscall(SYS_fchownat, AT_FDCWD, buf, uid, gid, 0);
 #endif
 
+#endif
 }
+
+#endif

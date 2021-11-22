@@ -1,6 +1,7 @@
 #include "stdio_impl.h"
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 
 /* The basic idea of this implementation is to open a new FILE,
  * hack the necessary parts of the new FILE into the old one, then
@@ -21,9 +22,13 @@ FILE *freopen(const char *restrict filename, const char *restrict mode, FILE *re
 
 	if (!filename) {
 		if (fl&O_CLOEXEC)
-			__syscall(SYS_fcntl, f->fd, F_SETFD, FD_CLOEXEC);
+		{
+			int errno1 = errno;
+			fcntl(f->fd, F_SETFD, FD_CLOEXEC);
+			errno = errno1;
+		}
 		fl &= ~(O_CREAT|O_EXCL|O_CLOEXEC);
-		if (syscall(SYS_fcntl, f->fd, F_SETFL, fl) < 0)
+		if (fcntl(f->fd, F_SETFL, fl) < 0)
 			goto fail;
 	} else {
 		f2 = fopen(filename, mode);

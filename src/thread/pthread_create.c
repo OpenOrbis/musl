@@ -156,7 +156,7 @@ _Noreturn void __pthread_exit(void *result)
 	self->tid = 0;
 	UNLOCK(self->killlock);
 
-	for (;;) __syscall(SYS_exit, 0);
+	for (;;) _exit(0);
 }
 
 void __do_cleanup_push(struct __ptcb *cb)
@@ -189,13 +189,13 @@ static int start(void *p)
 #ifndef PS4
 			__syscall(SYS_set_tid_address, &args->control);
 #endif
-			for (;;) __syscall(SYS_exit, 0);
+			for (;;) _exit(0);
 		}
 	}
 #ifndef PS4
 	__syscall(SYS_rt_sigprocmask, SIG_SETMASK, &args->sig_mask, 0, _NSIG/8);
 #else
-	__syscall(SYS_sigprocmask, SIG_SETMASK, &args->sig_mask, 0, _NSIG/8);
+	sigprocmask(SIG_SETMASK, &args->sig_mask, 0);
 #endif
 	__pthread_exit(args->start_func(args->start_arg));
 	return 0;
@@ -248,7 +248,7 @@ int __pthread_create(pthread_t *restrict res, const pthread_attr_t *restrict att
 		init_file_lock(__stdin_used);
 		init_file_lock(__stdout_used);
 		init_file_lock(__stderr_used);
-		__syscall(SYS_rt_sigprocmask, SIG_UNBLOCK, SIGPT_SET, 0, _NSIG/8);
+		sigprocmask(SIG_UNBLOCK, SIGPT_SET, 0);
 		self->tsd = (void **)__pthread_tsd_main;
 		__membarrier_init();
 		libc.threaded = 1;
@@ -354,7 +354,7 @@ int __pthread_create(pthread_t *restrict res, const pthread_attr_t *restrict att
 	if (ret < 0) {
 		ret = -EAGAIN;
 	} else if (attr._a_sched) {
-		ret = __syscall(SYS_sched_setscheduler,
+		ret = sched_setscheduler(
 			new->tid, attr._a_policy, &attr._a_prio);
 		if (a_swap(&args->control, ret ? 3 : 0)==2)
 			__wake(&args->control, 1, 1);

@@ -15,6 +15,7 @@ int fexecve(int fd, char *const argv[], char *const envp[])
 	if (errno == ENOENT) errno = EBADF;
 	return -1;
 #else
-	return __syscall(SYS_fexecve, fd, argv, envp);
+	errno = ENOSYS;
+	return -1;
 #endif
 }

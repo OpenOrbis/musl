@@ -4,6 +4,7 @@
 
 #define FIX(x) do{ if ((x)>=SYSCALL_RLIM_INFINITY) (x)=RLIM_INFINITY; }while(0)
 
+#ifndef PS4
 int getrlimit(int resource, struct rlimit *rlim)
 {
 	unsigned long k_rlim[2];
@@ -26,3 +27,14 @@ int getrlimit(int resource, struct rlimit *rlim)
 }
 
 weak_alias(getrlimit, getrlimit64);
+
+#else
+
+int getrlimit(int resource, struct rlimit* rlim);
+
+int getrlimit64(int resource, struct rlimit* rlim)
+{
+    return getrlimit(resource, rlim);
+}
+
+#endif

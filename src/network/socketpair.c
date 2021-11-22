@@ -3,6 +3,8 @@
 #include <errno.h>
 #include "syscall.h"
 
+#ifndef PS4 //XXX: SOCK_CLOEXEC and SOCK_NONBLOCK
+
 int socketpair(int domain, int type, int protocol, int fd[2])
 {
 	int r = socketcall(socketpair, domain, type, protocol, fd, 0, 0);
@@ -23,3 +25,5 @@ int socketpair(int domain, int type, int protocol, int fd[2])
 	}
 	return r;
 }
+
+#endif

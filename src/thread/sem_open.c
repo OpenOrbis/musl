@@ -24,6 +24,8 @@ static volatile int lock[1];
 
 sem_t *sem_open(const char *name, int flags, ...)
 {
+#ifndef PS4
+
 	va_list ap;
 	mode_t mode;
 	unsigned value;
@@ -156,10 +158,27 @@ fail:
 	semtab[slot].sem = 0;
 	UNLOCK(lock);
 	return SEM_FAILED;
+
+#else
+
+	void* id = 0;
+	int ksem_open(void** id, const char* path, int oflag, mode_t mode, unsigned int value);
+	va_list l;
+	va_start(l, flags);
+	mode_t mode = va_arg(l, mode_t);
+	unsigned int value = va_arg(l, unsigned int);
+	va_end(l);
+	int rv = ksem_open(&id, name, flags, mode, value);
+	if(rv)
+		return SEM_FAILED;
+	return id;
+
+#endif
 }
 
 int sem_close(sem_t *sem)
 {
+#ifdef PS4
 	int i;
 	LOCK(lock);
 	for (i=0; i<SEM_NSEMS_MAX && semtab[i].sem != sem; i++);
@@ -170,4 +189,8 @@ int sem_close(sem_t *sem)
 	UNLOCK(lock);
 	munmap(sem, sizeof *sem);
 	return 0;
+#else
+	int ksem_close(void*);
+	return ksem_close(sem);
+#endif
 }

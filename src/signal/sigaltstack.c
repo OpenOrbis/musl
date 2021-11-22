@@ -2,6 +2,7 @@
 #include <errno.h>
 #include "syscall.h"
 
+#ifndef PS4
 int sigaltstack(const stack_t *restrict ss, stack_t *restrict old)
 {
 	if (ss) {
@@ -16,3 +17,4 @@ int sigaltstack(const stack_t *restrict ss, stack_t *restrict old)
 	}
 	return syscall(SYS_sigaltstack, ss, old);
 }
+#endif

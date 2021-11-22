@@ -35,9 +35,17 @@ char *realpath(const char *restrict filename, char *restrict resolved)
 		goto err;
 	}
 
-	__syscall(SYS_close, fd);
+	{
+		int errno1 = errno;
+		close(fd);
+		errno = errno1;
+	}
 	return resolved ? strcpy(resolved, tmp) : strdup(tmp);
 err:
-	__syscall(SYS_close, fd);
+	{
+		int errno1 = errno;
+		close(fd);
+		errno = errno1;
+	}
 	return 0;
 }

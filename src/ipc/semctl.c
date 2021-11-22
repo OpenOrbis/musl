@@ -1,6 +1,7 @@
 #include <sys/sem.h>
 #include <stdarg.h>
 #include <endian.h>
+#include <errno.h>
 #include "syscall.h"
 #include "ipc.h"
 
@@ -16,6 +17,11 @@ union semun {
 
 int semctl(int id, int num, int cmd, ...)
 {
+#ifdef PS4
+	errno = ENOSYS;
+	return -1;
+#else
+
 	union semun arg = {0};
 	va_list ap;
 	switch (cmd & ~IPC_TIME64) {
@@ -68,4 +74,6 @@ int semctl(int id, int num, int cmd, ...)
 	}
 #endif
 	return __syscall_ret(r);
+
+#endif
 }

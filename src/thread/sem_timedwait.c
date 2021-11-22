@@ -8,6 +8,13 @@ static void cleanup(void *p)
 
 int sem_timedwait(sem_t *restrict sem, const struct timespec *restrict at)
 {
+#ifdef PS4
+
+	int ksem_timedwait(void* restrict, const struct timespec* restrict);
+	return ksem_timedwait(sem, at);
+
+#else
+
 	pthread_testcancel();
 
 	if (!sem_trywait(sem)) return 0;
@@ -28,4 +35,6 @@ int sem_timedwait(sem_t *restrict sem, const struct timespec *restrict at)
 		}
 	}
 	return 0;
+
+#endif
 }

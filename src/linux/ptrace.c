@@ -1,10 +1,16 @@
 #include <sys/ptrace.h>
 #include <stdarg.h>
 #include <unistd.h>
+#include <errno.h>
 #include "syscall.h"
 
+#ifndef PS4_LIBKERNEL_SYS
 long ptrace(int req, ...)
 {
+#ifdef PS4
+	errno = ENOSYS;
+	return -1;
+#else
 	va_list ap;
 	pid_t pid;
 	void *addr, *data, *addr2 = 0;
@@ -26,4 +32,6 @@ long ptrace(int req, ...)
 
 	if (ret < 0 || req-1U >= 3) return ret;
 	return result;
+#endif
 }
+#endif

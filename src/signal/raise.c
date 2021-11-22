@@ -3,6 +3,7 @@
 #include "syscall.h"
 #include "pthread_impl.h"
 
+#ifndef PS4
 int raise(int sig)
 {
 	sigset_t set;
@@ -11,3 +12,4 @@ int raise(int sig)
 	__restore_sigs(&set);
 	return ret;
 }
+#endif

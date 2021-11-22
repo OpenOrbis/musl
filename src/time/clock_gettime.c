@@ -1,4 +1,5 @@
 #include <time.h>
+#include <sys/time.h>
 #include <errno.h>
 #include <stdint.h>
 #include "syscall.h"
@@ -91,16 +92,19 @@ int __clock_gettime(clockid_t clk, struct timespec *ts)
 	}
 	return __syscall_ret(r);
 #else
-	r = __syscall(SYS_clock_gettime, clk, ts);
-	if (r == -ENOSYS) {
+	r = clock_gettime(clk, ts);
+	if (r < 0 && errno == ENOSYS) {
 		if (clk == CLOCK_REALTIME) {
-			__syscall(SYS_gettimeofday, ts, 0);
+			int errno1 = errno;
+			gettimeofday((struct timeval*)ts, 0);
+			errno = errno1;
 			ts->tv_nsec = (int)ts->tv_nsec * 1000;
 			return 0;
 		}
-		r = -EINVAL;
+		r = -1;
+		errno = EINVAL;
 	}
-	return __syscall_ret(r);
+	return r;
 #endif
 }
 

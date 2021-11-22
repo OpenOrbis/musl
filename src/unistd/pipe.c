@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include "syscall.h"
 
+#ifndef PS4
 int pipe(int fd[2])
 {
 #ifdef SYS_pipe
@@ -9,3 +10,4 @@ int pipe(int fd[2])
 	return syscall(SYS_pipe2, fd, 0);
 #endif
 }
+#endif

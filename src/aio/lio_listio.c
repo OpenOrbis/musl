@@ -46,7 +46,11 @@ static void notify_signal(struct sigevent *sev)
 		.si_pid = getpid(),
 		.si_uid = getuid()
 	};
+#ifdef PS4
+#warning "rt_sigqueueinfo not supported on PS4"
+#else
 	__syscall(SYS_rt_sigqueueinfo, si.si_pid, si.si_signo, &si);
+#endif
 }
 
 static void *wait_thread(void *p)

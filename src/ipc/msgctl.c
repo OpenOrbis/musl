@@ -1,5 +1,6 @@
 #include <sys/msg.h>
 #include <endian.h>
+#include <errno.h>
 #include "syscall.h"
 #include "ipc.h"
 
@@ -9,6 +10,11 @@
 
 int msgctl(int q, int cmd, struct msqid_ds *buf)
 {
+#ifdef PS4
+	errno = -ENOSYS;
+	return -1;
+#else
+
 #if IPC_TIME64
 	struct msqid_ds out, *orig;
 	if (cmd&IPC_TIME64) {
@@ -48,4 +54,6 @@ int msgctl(int q, int cmd, struct msqid_ds *buf)
 	}
 #endif
 	return __syscall_ret(r);
+
+#endif
 }

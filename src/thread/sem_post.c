@@ -3,6 +3,7 @@
 
 int sem_post(sem_t *sem)
 {
+#ifndef PS4
 	int val, waiters, priv = sem->__val[2];
 	do {
 		val = sem->__val[0];
@@ -14,4 +15,8 @@ int sem_post(sem_t *sem)
 	} while (a_cas(sem->__val, val, val+1+(val<0)) != val);
 	if (val<0 || waiters) __wake(sem->__val, 1, priv);
 	return 0;
+#else
+	int ksem_post(void*);
+	return ksem_post(sem);
+#endif
 }

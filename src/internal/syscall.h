@@ -13,6 +13,10 @@
 #define SYSCALL_MMAP2_UNIT 4096ULL
 #endif
 
+hidden long __syscall_ret(unsigned long);
+
+#ifndef PS4
+
 #ifndef __SYSCALL_LL_PRW
 #define __SYSCALL_LL_PRW(x) __SYSCALL_LL_O(x)
 #endif
@@ -22,8 +26,7 @@
 typedef long syscall_arg_t;
 #endif
 
-hidden long __syscall_ret(unsigned long),
-	__syscall_cp(syscall_arg_t, syscall_arg_t, syscall_arg_t, syscall_arg_t,
+hidden long __syscall_cp(syscall_arg_t, syscall_arg_t, syscall_arg_t, syscall_arg_t,
 	             syscall_arg_t, syscall_arg_t, syscall_arg_t);
 
 #define __syscall1(n,a) __syscall1(n,__scc(a))
@@ -65,6 +68,8 @@ hidden long __syscall_ret(unsigned long),
     ((long [6]){ (long)a, (long)b, (long)c, (long)d, (long)e, (long)f }))
 #define __socketcall_cp(nm,a,b,c,d,e,f) __syscall_cp(SYS_socketcall, __SC_##nm, \
     ((long [6]){ (long)a, (long)b, (long)c, (long)d, (long)e, (long)f }))
+#endif
+
 #endif
 
 /* fixup legacy 16-bit junk */
@@ -359,6 +364,11 @@ hidden long __syscall_ret(unsigned long),
 #define SIOCGSTAMPNS_OLD 0x8907
 #endif
 
+#ifdef PS4
+#define __sys_open(...) open(__VA_ARGS__)
+#define sys_open __sys_open
+#else
+
 #ifdef SYS_open
 #define __sys_open2(x,pn,fl) __syscall2(SYS_open, pn, (fl)|O_LARGEFILE)
 #define __sys_open3(x,pn,fl,mo) __syscall3(SYS_open, pn, (fl)|O_LARGEFILE, mo)
@@ -376,6 +386,8 @@ hidden long __syscall_ret(unsigned long),
 
 #define __sys_open_cp(...) __SYSCALL_DISP(__sys_open_cp,,__VA_ARGS__)
 #define sys_open_cp(...) __syscall_ret(__sys_open_cp(__VA_ARGS__))
+
+#endif
 
 hidden void __procfdname(char __buf[static 15+3*sizeof(int)], unsigned);
 

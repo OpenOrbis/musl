@@ -4,8 +4,13 @@
 #include "syscall.h"
 #include "kstat.h"
 
+#ifndef PS4_LIBKERNEL_SYS
 int fchmodat(int fd, const char *path, mode_t mode, int flag)
 {
+#ifdef PS4
+	errno = ENOSYS;
+	return -1;
+#else
 	if (!flag) return syscall(SYS_fchmodat, fd, path, mode, flag);
 
 	if (flag != AT_SYMLINK_NOFOLLOW)
@@ -35,4 +40,6 @@ int fchmodat(int fd, const char *path, mode_t mode, int flag)
 
 	__syscall(SYS_close, fd2);
 	return __syscall_ret(ret);
+#endif
 }
+#endif

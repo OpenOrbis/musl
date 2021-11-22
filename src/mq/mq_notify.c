@@ -29,6 +29,18 @@ static void *start(void *p)
 	return 0;
 }
 
+#ifdef PS4
+#ifdef PS4_LIBKERNEL_SYS
+int kmq_notify(mqd_t, const struct sigevent*);
+#else
+static int kmq_notify(mqd_t mqd, const struct sigevent* sev)
+{
+	errno = ENOSYS;
+	return -1;
+}
+#endif
+#endif
+
 int mq_notify(mqd_t mqd, const struct sigevent *sev)
 {
 	struct args args = { .sev = sev };
@@ -39,7 +51,11 @@ int mq_notify(mqd_t mqd, const struct sigevent *sev)
 	static const char zeros[32];
 
 	if (!sev || sev->sigev_notify != SIGEV_THREAD)
+#ifdef PS4
+		return kmq_notify(mqd, sev);
+#else
 		return syscall(SYS_mq_notify, mqd, sev);
+#endif
 
 	s = socket(AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, 0);
 	if (s < 0) return -1;
@@ -51,7 +67,7 @@ int mq_notify(mqd_t mqd, const struct sigevent *sev)
 	pthread_barrier_init(&args.barrier, 0, 2);
 
 	if (pthread_create(&td, &attr, start, &args)) {
-		__syscall(SYS_close, s);
+		close(s);
 		errno = EAGAIN;
 		return -1;
 	}
@@ -63,9 +79,17 @@ int mq_notify(mqd_t mqd, const struct sigevent *sev)
 	sev2.sigev_signo = s;
 	sev2.sigev_value.sival_ptr = (void *)&zeros;
 
-	if (syscall(SYS_mq_notify, mqd, &sev2) < 0) {
+	if (
+#ifdef PS4
+		kmq_notify(mqd, &sev2)
+#else
+		syscall(SYS_mq_notify, mqd, &sev2)
+#endif
+	 < 0) {
 		pthread_cancel(td);
-		__syscall(SYS_close, s);
+		int errno1 = errno;
+		close(s);
+		errno = errno1;
 		return -1;
 	}
 

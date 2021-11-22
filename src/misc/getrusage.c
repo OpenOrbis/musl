@@ -3,6 +3,7 @@
 #include <errno.h>
 #include "syscall.h"
 
+#ifndef PS4
 int getrusage(int who, struct rusage *ru)
 {
 	int r;
@@ -33,3 +34,4 @@ int getrusage(int who, struct rusage *ru)
 	}
 	return __syscall_ret(r);
 }
+#endif

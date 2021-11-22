@@ -5,6 +5,8 @@
 #define IS32BIT(x) !((x)+0x80000000ULL>>32)
 #define CLAMP(x) (int)(IS32BIT(x) ? (x) : 0x7fffffffU+((0ULL+(x))>>63))
 
+#ifndef PS4
+
 static int do_sigtimedwait(const sigset_t *restrict mask, siginfo_t *restrict si, const struct timespec *restrict ts)
 {
 #ifdef SYS_rt_sigtimedwait_time64
@@ -30,3 +32,5 @@ int sigtimedwait(const sigset_t *restrict mask, siginfo_t *restrict si, const st
 	while (ret==-EINTR);
 	return __syscall_ret(ret);
 }
+
+#endif

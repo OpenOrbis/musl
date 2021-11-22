@@ -16,7 +16,9 @@
 
 static void cleanup(void *p)
 {
-	__syscall(SYS_close, (intptr_t)p);
+	int errno1 = errno;
+	close((intptr_t)p);
+	errno = errno1;
 }
 
 static unsigned long mtime()

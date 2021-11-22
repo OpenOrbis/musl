@@ -5,6 +5,8 @@
 #include <string.h>
 #include "syscall.h"
 
+#ifndef PS4 //do we need that compat crap on ps4?
+
 hidden void __convert_scm_timestamps(struct msghdr *, socklen_t);
 
 void __convert_scm_timestamps(struct msghdr *msg, socklen_t csize)
@@ -66,3 +68,5 @@ ssize_t recvmsg(int fd, struct msghdr *msg, int flags)
 #endif
 	return r;
 }
+
+#endif

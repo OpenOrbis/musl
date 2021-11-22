@@ -39,12 +39,13 @@ int __clock_nanosleep(clockid_t clk, int flags, const struct timespec *req, stru
 	long ns = req->tv_nsec;
 	long long extra = s - CLAMP(s);
 	long ts32[2] = { CLAMP(s), ns };
-	int r = -__syscall_cp(SYS_nanosleep, &ts32, &ts32);
-	if (r==-EINTR && rem && !(flags & TIMER_ABSTIME)) {
+	int _nanosleep(const struct timespec*, struct timespec*);
+	int r = nanosleep(&ts32, &ts32) ? errno : 0;
+	if (r==EINTR && rem && !(flags & TIMER_ABSTIME)) {
 		rem->tv_sec = ts32[0] + extra;
 		rem->tv_nsec = ts32[1];
 	}
-	return -r;
+	return r;
 #endif
 }
 

@@ -7,6 +7,7 @@
 #define IS32BIT(x) !((x)+0x80000000ULL>>32)
 #define CLAMP(x) (int)(IS32BIT(x) ? (x) : 0x7fffffffU+((0ULL+(x))>>63))
 
+#ifndef PS4
 int select(int n, fd_set *restrict rfds, fd_set *restrict wfds, fd_set *restrict efds, struct timeval *restrict tv)
 {
 	time_t s = tv ? tv->tv_sec : 0;
@@ -42,3 +43,4 @@ int select(int n, fd_set *restrict rfds, fd_set *restrict wfds, fd_set *restrict
 		tv ? ((long[]){s, ns}) : 0, ((syscall_arg_t[]){ 0, _NSIG/8 }));
 #endif
 }
+#endif

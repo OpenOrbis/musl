@@ -5,7 +5,9 @@
 
 #include "crt_arch.h"
 
+#ifndef main
 int main();
+#endif
 weak void _init();
 weak void _fini();
 int __libc_start_main(int (*)(), int, char **,
@@ -18,6 +20,5 @@ void _start_ps4_c(long *p)
 {
 	int argc = p[0];
 	char **argv = (void *)(p+1);
-	libc.threads_minus_1 = 1;
 	__libc_start_main(main, argc, argv, _init, _fini, 0);
 }

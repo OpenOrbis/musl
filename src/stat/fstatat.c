@@ -8,6 +8,8 @@
 #include "syscall.h"
 #include "kstat.h"
 
+#ifndef PS4_LIBKERNEL_SYS
+
 struct statx {
 	uint32_t stx_mask;
 	uint32_t stx_blksize;
@@ -74,6 +76,7 @@ static int fstatat_statx(int fd, const char *restrict path, struct stat *restric
 #endif
 }
 
+#ifndef PS4
 static int fstatat_kstat(int fd, const char *restrict path, struct stat *restrict st, int flag)
 {
 	int ret;
@@ -135,9 +138,14 @@ static int fstatat_kstat(int fd, const char *restrict path, struct stat *restric
 
 	return 0;
 }
+#endif
 
 int fstatat(int fd, const char *restrict path, struct stat *restrict st, int flag)
 {
+#ifdef PS4
+	errno = ENOSYS;
+	return -1;
+#else
 	int ret;
 	if (sizeof((struct kstat){0}.st_atime_sec) < sizeof(time_t)) {
 		ret = fstatat_statx(fd, path, st, flag);
@@ -145,8 +153,11 @@ int fstatat(int fd, const char *restrict path, struct stat *restrict st, int fla
 	}
 	ret = fstatat_kstat(fd, path, st, flag);
 	return __syscall_ret(ret);
+#endif
 }
 
 #if !_REDIR_TIME64
 weak_alias(fstatat, fstatat64);
+#endif
+
 #endif

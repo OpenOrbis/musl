@@ -3,6 +3,7 @@
 #include <errno.h>
 #include "syscall.h"
 
+#ifndef PS4
 int getsockopt(int fd, int level, int optname, void *restrict optval, socklen_t *restrict optlen)
 {
 	long tv32[2];
@@ -39,3 +40,4 @@ int getsockopt(int fd, int level, int optname, void *restrict optval, socklen_t 
 	}
 	return __syscall_ret(r);
 }
+#endif

@@ -3,5 +3,5 @@
 
 void call_once(once_flag *flag, void (*func)(void))
 {
-	__pthread_once(flag, func);
+	pthread_once(flag, func);
 }

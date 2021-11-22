@@ -6,6 +6,8 @@
 #define MIN(a, b) ((a)<(b) ? (a) : (b))
 #define FIX(x) do{ if ((x)>=SYSCALL_RLIM_INFINITY) (x)=RLIM_INFINITY; }while(0)
 
+#ifndef PS4
+
 static int __setrlimit(int resource, const struct rlimit *rlim)
 {
 	unsigned long k_rlim[2];
@@ -41,7 +43,11 @@ static void do_setrlimit(void *p)
 int setrlimit(int resource, const struct rlimit *rlim)
 {
 	struct ctx c = { .res = resource, .rlim = rlim, .err = -1 };
+#ifdef PS4
+	do_setrlimit(&c);
+#else
 	__synccall(do_setrlimit, &c);
+#endif
 	if (c.err) {
 		if (c.err>0) errno = c.err;
 		return -1;
@@ -50,3 +56,14 @@ int setrlimit(int resource, const struct rlimit *rlim)
 }
 
 weak_alias(setrlimit, setrlimit64);
+
+#else
+
+int setrlimit(int resource, const struct rlimit *rlim);
+
+int setrlimit64(int resource, const struct rlimit* rlim)
+{
+	return setrlimit(resource, rlim);
+}
+
+#endif

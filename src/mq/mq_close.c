@@ -1,7 +1,8 @@
 #include <mqueue.h>
+#include <unistd.h>
 #include "syscall.h"
 
 int mq_close(mqd_t mqd)
 {
-	return syscall(SYS_close, mqd);
+	return close(mqd);
 }

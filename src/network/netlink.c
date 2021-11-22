@@ -2,6 +2,7 @@
 #include <string.h>
 #include <syscall.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include "netlink.h"
 
 static int __netlink_enumerate(int fd, unsigned int seq, int type, int af,
@@ -47,6 +48,10 @@ int __rtnetlink_enumerate(int link_af, int addr_af, int (*cb)(void *ctx, struct 
 	if (fd < 0) return -1;
 	r = __netlink_enumerate(fd, 1, RTM_GETLINK, link_af, cb, ctx);
 	if (!r) r = __netlink_enumerate(fd, 2, RTM_GETADDR, addr_af, cb, ctx);
-	__syscall(SYS_close,fd);
+	{
+		int errno1 = errno;
+		close(fd);
+		errno = errno1;
+	}
 	return r;
 }

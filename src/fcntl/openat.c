@@ -17,7 +17,12 @@ int openat(int fd, const char *filename, int flags, ...)
 		va_end(ap);
 	}
 
+#ifdef PS4
+	int _openat(int fd, const char* path, int flags, mode_t mode);
+	return _openat(fd, filename, flags|O_LARGEFILE, mode);
+#else
 	return syscall_cp(SYS_openat, fd, filename, flags|O_LARGEFILE, mode);
+#endif
 }
 
 weak_alias(openat, openat64);

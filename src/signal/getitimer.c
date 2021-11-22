@@ -1,6 +1,7 @@
 #include <sys/time.h>
 #include "syscall.h"
 
+#ifndef PS4
 int getitimer(int which, struct itimerval *old)
 {
 	if (sizeof(time_t) > sizeof(long)) {
@@ -16,3 +17,4 @@ int getitimer(int which, struct itimerval *old)
 	}
 	return syscall(SYS_getitimer, which, old);
 }
+#endif

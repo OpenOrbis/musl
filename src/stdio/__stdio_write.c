@@ -1,14 +1,27 @@
 #include "stdio_impl.h"
 #include <sys/uio.h>
 
+#ifdef PS4
+
+ssize_t _writev(int fd, const struct iovec* iov, int iovcnt);
+
+#else
+
 static ssize_t _writev(int fd, const struct iovec* iov, int iovcnt)
+{
+	return syscall(SYS_writev, f->fd, iov, iovcnt);
+}
+
+#endif
+
+static ssize_t _writev_ps4(int fd, const struct iovec* iov, int iovcnt)
 {
 	ssize_t total, i;
 	
 	if (fd != 1 && fd != 2)
-		return syscall(SYS_writev, f->fd, iov, iovcnt);
+		return _writev(fd, iov, iovcnt);
 	
-	if (!iov || iovcnt < =)
+	if (!iov || iovcnt < 0)
 		return -1;
 	
 	for (i = 0, total = 0; i < iovcnt; i++) {
@@ -33,7 +46,7 @@ size_t __stdio_write(FILE *f, const unsigned char *buf, size_t len)
 	int iovcnt = 2;
 	ssize_t cnt;
 	for (;;) {
-		cnt = _writev(f->fd, iov, iovcnt);
+		cnt = _writev_ps4(f->fd, iov, iovcnt);
 		if (cnt == rem) {
 			f->wend = f->buf + f->buf_size;
 			f->wpos = f->wbase = f->buf;

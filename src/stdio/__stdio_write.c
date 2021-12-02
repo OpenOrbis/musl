@@ -15,7 +15,7 @@ static ssize_t _writev(int fd, const struct iovec* iov, int iovcnt)
 
 #endif
 
-static ssize_t _writev_ps4(int fd, const struct iovec** iov, int iovcnt)
+static ssize_t _writev_ps4(int fd, const struct iovec* iov, int iovcnt)
 {
 	ssize_t total, i;
 	

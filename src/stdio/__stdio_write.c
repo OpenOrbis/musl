@@ -1,12 +1,6 @@
 #include "stdio_impl.h"
 #include <sys/uio.h>
 
-#ifdef PS4
-
-ssize_t _writev(int fd, const struct iovec* iov, int iovcnt);
-
-#else
-
 static ssize_t _writev(int fd, const struct iovec* iov, int iovcnt)
 {
 	ssize_t total, i;
@@ -27,8 +21,6 @@ static ssize_t _writev(int fd, const struct iovec* iov, int iovcnt)
 	
 	return total;
 }
-
-#endif
 
 size_t __stdio_write(FILE *f, const unsigned char *buf, size_t len)
 {

@@ -9,7 +9,23 @@ ssize_t _writev(int fd, const struct iovec* iov, int iovcnt);
 
 static ssize_t _writev(int fd, const struct iovec* iov, int iovcnt)
 {
-	return syscall(SYS_writev, f->fd, iov, iovcnt);
+	ssize_t total, i;
+	
+	if (fd != 1 && fd != 2)
+		return syscall(SYS_writev, f->fd, iov, iovcnt);
+	
+	if (!iov || iovcnt < =)
+		return -1;
+	
+	for (i = 0, total = 0; i < iovcnt; i++) {
+		if (!(iov[i]->iov_base))
+			return -1;
+		
+		write(fd, iov[i]->iov_base, iov[i]->iov_len);
+		total += iov[i]->iov_len;
+	}
+	
+	return total;
 }
 
 #endif

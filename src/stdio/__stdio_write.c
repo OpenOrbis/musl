@@ -26,11 +26,11 @@ static ssize_t _writev_ps4(int fd, const struct iovec* iov, int iovcnt)
 		return -1;
 	
 	for (i = 0, total = 0; i < iovcnt; i++) {
-		if (!(iov[i]->iov_base))
+		if (!(iov[i].iov_base))
 			return -1;
 		
-		_write(fd, iov[i]->iov_base, iov[i]->iov_len);
-		total += iov[i]->iov_len;
+		_write(fd, iov[i].iov_base, iov[i].iov_len);
+		total += iov[i].iov_len;
 	}
 	
 	return total;

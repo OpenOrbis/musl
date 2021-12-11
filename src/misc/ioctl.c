@@ -114,7 +114,11 @@ static void convert_ioctl_struct(const struct ioctl_compat_map *map, char *old, 
 }
 #endif
 
+#ifndef PS4
 int ioctl(int fd, int req, ...)
+#else
+int ioctl(int fd, unsigned long req /* request */, ...)
+#endif
 {
 	void *arg;
 	va_list ap;
@@ -122,7 +126,8 @@ int ioctl(int fd, int req, ...)
 	arg = va_arg(ap, void *);
 	va_end(ap);
 #ifdef PS4
-	int _ioctl(int fd, int req, ...);
+	int _ioctl(int fd, unsigned long request, ...);
+	/* It seems that both _ioctl and ioctl point to the same destination in libkernel (two NIDs, same func) */
 	return _ioctl(fd, req, arg);
 #else
 	int r = __syscall(SYS_ioctl, fd, req, arg);

@@ -1,0 +1,47 @@
+name: Musl Test Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up environment
+      run: |
+        export CC="clang"
+        export CFLAGS="-fPIC -DPS4 -D_LIBUNWIND_IS_BAREMETAL=1"
+        mkdir /ps4
+
+    - name: Configure
+      run: ./configure --target=x86_64-scei-ps4 --disable-shared CC="$CC" CFLAGS="$CFLAGS" --prefix=/ps4
+
+    - name: Build
+      run: make
+
+    - name: Install
+      run: make install
+    
+    - name: Create tarball
+      run: |
+        cd /ps4
+        tar -cvzf musl.tar.gz lib/* include/*
+
+    - name: Upload lib/
+      uses: actions/upload-artifact@v2
+      with:
+        name: lib.tar.gz
+        path: /ps4/lib.tar.gz
+    
+    - name: Upload include/
+      uses: actions/upload-artifact@v2
+      with:
+        name: include.tar.gz
+        path: /ps4/include.tar.gz

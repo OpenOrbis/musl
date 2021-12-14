@@ -18,10 +18,10 @@ jobs:
       run: |
         export CC="clang"
         export CFLAGS="-fPIC -DPS4 -D_LIBUNWIND_IS_BAREMETAL=1"
-        mkdir /ps4
+        mkdir ps4
 
     - name: Configure
-      run: ./configure --target=x86_64-scei-ps4 --disable-shared CC="$CC" CFLAGS="$CFLAGS" --prefix=/ps4
+      run: ./configure --target=x86_64-scei-ps4 --disable-shared CC="$CC" CFLAGS="$CFLAGS" --prefix=./ps4
 
     - name: Build
       run: make
@@ -31,7 +31,7 @@ jobs:
     
     - name: Create tarball
       run: |
-        cd /ps4
+        cd ps4
         tar -cvzf musl.tar.gz lib/* include/*
 
     - name: Upload lib/

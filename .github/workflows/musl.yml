@@ -16,12 +16,10 @@ jobs:
 
     - name: Set up environment
       run: |
-        export CC="clang"
-        export CFLAGS="-fPIC -DPS4 -D_LIBUNWIND_IS_BAREMETAL=1"
         mkdir ps4
 
     - name: Configure
-      run: ./configure --target=x86_64-scei-ps4 --disable-shared CC="$CC" CFLAGS="$CFLAGS" --prefix=./ps4
+      run: ./configure --target=x86_64-scei-ps4 --disable-shared CC="clang" CFLAGS="-fPIC -DPS4 -D_LIBUNWIND_IS_BAREMETAL=1" --prefix=./ps4
 
     - name: Build
       run: make

@@ -30,12 +30,7 @@ jobs:
       run: |
         cd ps4
         tar -cvzf musl.tar.gz lib/* include/*
-    - name: Upload musl
-      uses: actions/upload-artifact@v2
-      with:
-        name: musl.tar.gz
-        path: ps4/musl.tar.gz
-        
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1

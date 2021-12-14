@@ -32,14 +32,8 @@ jobs:
         cd ps4
         tar -cvzf musl.tar.gz lib/* include/*
 
-    - name: Upload lib/
+    - name: Upload musl
       uses: actions/upload-artifact@v2
       with:
-        name: lib.tar.gz
-        path: ps4/lib.tar.gz
-    
-    - name: Upload include/
-      uses: actions/upload-artifact@v2
-      with:
-        name: include.tar.gz
-        path: ps4/include.tar.gz
+        name: musl.tar.gz
+        path: ps4/musl.tar.gz

@@ -65,6 +65,8 @@ static __inline unsigned long long __DOUBLE_BITS(double __f)
 	return __u.__i;
 }
 
+#ifdef __cplusplus
+
 #define _fpclassify(x) ( \
 	sizeof(x) == sizeof(float) ? __fpclassifyf(x) : \
 	sizeof(x) == sizeof(double) ? __fpclassify(x) : \
@@ -123,6 +125,45 @@ static __inline int isunordered   (float       __x, float       __y) { return _i
 static __inline int isunordered   (double      __x, double      __y) { return _isunordered(__x, __y);    }
 static __inline int isunordered   (long double __x, long double __y) { return _isunordered(__x, __y);    }
 
+#else
+
+#define fpclassify(x) ( \
+	sizeof(x) == sizeof(float) ? __fpclassifyf(x) : \
+	sizeof(x) == sizeof(double) ? __fpclassify(x) : \
+	__fpclassifyl(x) )
+
+#define isinf(x) ( \
+	sizeof(x) == sizeof(float) ? (__FLOAT_BITS(x) & 0x7fffffff) == 0x7f800000 : \
+	sizeof(x) == sizeof(double) ? (__DOUBLE_BITS(x) & -1ULL>>1) == 0x7ffULL<<52 : \
+	__fpclassifyl(x) == FP_INFINITE)
+
+#define isnan(x) ( \
+	sizeof(x) == sizeof(float) ? (__FLOAT_BITS(x) & 0x7fffffff) > 0x7f800000 : \
+	sizeof(x) == sizeof(double) ? (__DOUBLE_BITS(x) & -1ULL>>1) > 0x7ffULL<<52 : \
+	__fpclassifyl(x) == FP_NAN)
+
+#define isnormal(x) ( \
+	sizeof(x) == sizeof(float) ? ((__FLOAT_BITS(x)+0x00800000) & 0x7fffffff) >= 0x01000000 : \
+	sizeof(x) == sizeof(double) ? ((__DOUBLE_BITS(x)+(1ULL<<52)) & -1ULL>>1) >= 1ULL<<53 : \
+	__fpclassifyl(x) == FP_NORMAL)
+
+#define isfinite(x) ( \
+	sizeof(x) == sizeof(float) ? (__FLOAT_BITS(x) & 0x7fffffff) < 0x7f800000 : \
+	sizeof(x) == sizeof(double) ? (__DOUBLE_BITS(x) & -1ULL>>1) < 0x7ffULL<<52 : \
+	__fpclassifyl(x) > FP_INFINITE)
+
+int __signbit(double);
+int __signbitf(float);
+int __signbitl(long double);
+
+#define signbit(x) ( \
+	sizeof(x) == sizeof(float) ? (int)(__FLOAT_BITS(x)>>31) : \
+	sizeof(x) == sizeof(double) ? (int)(__DOUBLE_BITS(x)>>63) : \
+	__signbitl(x) )
+
+#define isunordered(x,y) (isnan((x)) ? ((void)(y),1) : isnan((y)))
+#endif
+
 #define __ISREL_DEF(rel, op, type) \
 static __inline int __is##rel(type __x, type __y) \
 { return !isunordered(__x,__y) && __x op __y; }
@@ -148,6 +189,8 @@ __ISREL_DEF(greaterequall, >=, long double)
 	sizeof((x)+(y)) == sizeof(double) ? p(x, y) : \
 	p##l(x, y) )
 
+#ifdef __cplusplus
+
 #define _isless(x, y)            __tg_pred_2(x, y, __isless)
 #define _islessequal(x, y)       __tg_pred_2(x, y, __islessequal)
 #define _islessgreater(x, y)     __tg_pred_2(x, y, __islessgreater)
@@ -170,6 +213,16 @@ static __inline int islessequal   (long double __x, long double __y) { return _i
 static __inline int islessgreater (float       __x, float       __y) { return _islessgreater(__x, __y);  }
 static __inline int islessgreater (double      __x, double      __y) { return _islessgreater(__x, __y);  }
 static __inline int islessgreater (long double __x, long double __y) { return _islessgreater(__x, __y);  }
+
+#else
+
+#define isless(x, y)            __tg_pred_2(x, y, __isless)
+#define islessequal(x, y)       __tg_pred_2(x, y, __islessequal)
+#define islessgreater(x, y)     __tg_pred_2(x, y, __islessgreater)
+#define isgreater(x, y)         __tg_pred_2(x, y, __isgreater)
+#define isgreaterequal(x, y)    __tg_pred_2(x, y, __isgreaterequal)
+
+#endif
 
 double      acos(double);
 float       acosf(float);

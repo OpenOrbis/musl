@@ -213,16 +213,12 @@ void		__pthread_cleanup_push_imp(void (*)(void *), void *,
 void		__pthread_cleanup_pop_imp(int);
 
 #define		pthread_cleanup_push(cleanup_routine, cleanup_arg)		\
-		{								\
 			struct _pthread_cleanup_info __cleanup_info__;		\
 			__pthread_cleanup_push_imp(cleanup_routine, cleanup_arg,\
-				&__cleanup_info__);				\
-			{
+				&__cleanup_info__);
 
 #define		pthread_cleanup_pop(execute)					\
-			}							\
-			__pthread_cleanup_pop_imp(execute);			\
-		}
+			__pthread_cleanup_pop_imp(execute);
 
 #ifdef _GNU_SOURCE
 struct cpu_set_t;

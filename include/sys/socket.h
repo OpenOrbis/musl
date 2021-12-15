@@ -97,6 +97,8 @@ struct linger {
 #endif
 
 #define PF_UNSPEC       0
+#define PF_NETLINK      PF_UNSPEC
+#define PF_PACKET       PF_UNSPEC
 #define PF_LOCAL        1
 #define PF_UNIX         PF_LOCAL
 #define PF_FILE         PF_LOCAL
@@ -131,7 +133,7 @@ struct linger {
 #define PF_INET6        28
 #define PF_NATM         29
 #define PF_ATM          30
-#define AF_HDRCMPLT     31
+#define PF_HDRCMPLT     31
 #define PF_NETGRAPH     32
 #define PF_SLOW         33
 #define PF_SCLUSTER     34
@@ -143,6 +145,8 @@ struct linger {
 #define PF_MAX          42
 
 #define AF_UNSPEC       PF_UNSPEC
+#define AF_NETLINK      PF_NETLINK
+#define AF_PACKET       PF_PACKET
 #define AF_LOCAL        PF_LOCAL
 #define AF_UNIX         PF_UNIX
 #define AF_FILE         PF_FILE
@@ -328,8 +332,8 @@ struct linger {
 #define SCM_CREDENTIALS 0x02
 
 struct sockaddr {
-	uint8_t sa_len;
-	uint8_t sa_family;
+	unsigned char sa_len;
+	unsigned char sa_family;
 	char sa_data[14];
 };
 

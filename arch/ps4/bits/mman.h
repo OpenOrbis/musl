@@ -37,6 +37,21 @@
 #define	MAP_STACK	 0x0400	/* region grows down, like a stack */
 #define	MAP_NOSYNC	 0x0800 /* page to but do not sync underlying file */
 
+// Undefine flags not used on BSD
+#undef MAP_SHARED_VALIDATE
+#undef MAP_TYPE
+#undef MAP_NORESERVE
+#undef MAP_GROWSDOWN
+#undef MAP_DENYWRITE
+#undef MAP_EXECUTABLE
+#undef MAP_LOCKED
+#undef MAP_POPULATE
+#undef MAP_NONBLOCK
+#undef MAP_STACK
+#undef MAP_HUGETLB
+#undef MAP_SYNC
+#undef MAP_FIXED_NOREPLACE
+
 /*
  * Mapping type
  */
@@ -49,13 +64,8 @@
 /*
  * Extended flags
  */
-#define	MAP_GUARD	 0x00002000 /* reserve but don't map address range */
-#define	MAP_EXCL	 0x00004000 /* for MAP_FIXED, fail if address is used */
 #define	MAP_NOCORE	 0x00020000 /* dont include these pages in a coredump */
 #define	MAP_PREFAULT_READ 0x00040000 /* prefault mapping for reading */
-#ifdef __LP64__
-#define	MAP_32BIT	 0x00080000 /* map in the low 2GB of address space */
-#endif
 
 /*
  * Request specific alignment (n == log2 of the desired alignment).

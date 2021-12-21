@@ -23,4 +23,6 @@ TYPEDEF unsigned short mode_t;
 TYPEDEF unsigned short nlink_t;
 TYPEDEF unsigned int blksize_t;
 
+TYPEDEF struct __sigset_t { unsigned int __bits[4]; } sigset_t;
+
 TYPEDEF struct { long long __ll; long double __ld; } max_align_t;

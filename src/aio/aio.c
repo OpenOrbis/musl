@@ -189,7 +189,11 @@ static void cleanup(void *ctx)
 	}
 	if (sev.sigev_notify == SIGEV_THREAD) {
 		a_store(&__pthread_self()->cancel, 0);
+#ifdef PS4
+#warning "sigev_notify_function not supported on PS4"
+#else
 		sev.sigev_notify_function(sev.sigev_value);
+#endif
 	}
 }
 
@@ -295,9 +299,13 @@ static int submit(struct aiocb *cb, int op)
 	pthread_mutex_unlock(&q->lock);
 
 	if (cb->aio_sigevent.sigev_notify == SIGEV_THREAD) {
+#ifdef PS4
+#warning "sigev_notify_function not supported on PS4"
+#else
 		if (cb->aio_sigevent.sigev_notify_attributes)
 			a = *cb->aio_sigevent.sigev_notify_attributes;
 		else
+#endif
 			pthread_attr_init(&a);
 	} else {
 		pthread_once(&init_stack_size_once, init_stack_size);

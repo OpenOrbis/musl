@@ -64,7 +64,11 @@ static void *wait_thread(void *p)
 		notify_signal(sev);
 		break;
 	case SIGEV_THREAD:
+#ifdef PS4
+#warning "sigev_notify_function not supported on PS4"
+#else
 		sev->sigev_notify_function(sev->sigev_value);
+#endif
 		break;
 	}
 	return 0;
@@ -121,9 +125,13 @@ int lio_listio(int mode, struct aiocb *restrict const *restrict cbs, int cnt, st
 		pthread_t td;
 
 		if (sev->sigev_notify == SIGEV_THREAD) {
+#ifdef PS4
+#warning "sigev_notify_function not supported on PS4"
+#else
 			if (sev->sigev_notify_attributes)
 				a = *sev->sigev_notify_attributes;
 			else
+#endif
 				pthread_attr_init(&a);
 		} else {
 			pthread_attr_init(&a);

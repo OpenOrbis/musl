@@ -5,12 +5,14 @@
 #include "syscall.h"
 
 #ifndef PS4_LIBKERNEL_SYS
-long ptrace(int req, ...)
-{
 #ifdef PS4
+int ptrace(int _request, pid_t _pid, void* _addr, int _data)
+{
 	errno = ENOSYS;
 	return -1;
 #else
+long ptrace(int req, ...)
+{
 	va_list ap;
 	pid_t pid;
 	void *addr, *data, *addr2 = 0;

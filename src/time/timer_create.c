@@ -38,15 +38,22 @@ static void timer_handler(int sig, siginfo_t *si, void *ctx)
 
 static void install_handler()
 {
+#ifdef PS4
+#warning "timer install_handler not supported on PS4"
+#else
 	struct sigaction sa = {
 		.sa_sigaction = timer_handler,
 		.sa_flags = SA_SIGINFO | SA_RESTART
 	};
 	__libc_sigaction(SIGTIMER, &sa, 0);
+#endif
 }
 
 static void *start(void *arg)
 {
+#ifdef PS4
+#warning "timer start not supported on PS4"
+#else
 	pthread_t self = __pthread_self();
 	struct start_args *args = arg;
 	jmp_buf jb;
@@ -65,9 +72,7 @@ static void *start(void *arg)
 		}
 		if (self->timer_id < 0) break;
 	}
-#ifndef PS4
 	__syscall(SYS_timer_delete, self->timer_id & INT_MAX);
-#else
 	{
 		int ktimer_delete(int);
 		ktimer_delete(self->timer_id & INT_MAX);
@@ -108,9 +113,13 @@ int timer_create(clockid_t clk, struct sigevent *restrict evp, timer_t *restrict
 		break;
 	case SIGEV_THREAD:
 		pthread_once(&once, install_handler);
+#ifdef PS4
+#warning "sigev_notify_function not supported on PS4"
+#else
 		if (evp->sigev_notify_attributes)
 			attr = *evp->sigev_notify_attributes;
 		else
+#endif
 			pthread_attr_init(&attr);
 		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 		pthread_barrier_init(&args.b, 0, 2);

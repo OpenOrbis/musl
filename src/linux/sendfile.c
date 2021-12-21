@@ -11,5 +11,7 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *ofs, size_t count)
 weak_alias(sendfile, sendfile64);
 
 #else
+
 #warning "TODO: sendfile"
+
 #endif

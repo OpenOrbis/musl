@@ -73,14 +73,10 @@ typedef struct sigaltstack stack_t;
 
 #define SEGV_MAPERR 1
 #define SEGV_ACCERR 2
-#define SEGV_BNDERR 3
-#define SEGV_PKUERR 4
 
 #define BUS_ADRALN 1
 #define BUS_ADRERR 2
 #define BUS_OBJERR 3
-#define BUS_MCEERR_AR 4
-#define BUS_MCEERR_AO 5
 
 #define CLD_EXITED 1
 #define CLD_KILLED 2
@@ -90,99 +86,73 @@ typedef struct sigaltstack stack_t;
 #define CLD_CONTINUED 6
 
 union sigval {
-	int sival_int;
-	void *sival_ptr;
+	/* Members as suggested by Annex C of POSIX 1003.1b. */
+	int     sival_int;
+	void    *sival_ptr;
+	/* 6.0 compatibility */
+	int     sigval_int;
+	void    *sigval_ptr;
 };
 
-typedef struct {
-#ifdef __SI_SWAP_ERRNO_CODE
-	int si_signo, si_code, si_errno;
-#else
-	int si_signo, si_errno, si_code;
-#endif
-	union {
-		char __pad[128 - 2*sizeof(int) - sizeof(long)];
-		struct {
-			union {
-				struct {
-					pid_t si_pid;
-					uid_t si_uid;
-				} __piduid;
-				struct {
-					int si_timerid;
-					int si_overrun;
-				} __timer;
-			} __first;
-			union {
-				union sigval si_value;
-				struct {
-					int si_status;
-					clock_t si_utime, si_stime;
-				} __sigchld;
-			} __second;
-		} __si_common;
-		struct {
-			void *si_addr;
-			short si_addr_lsb;
-			union {
-				struct {
-					void *si_lower;
-					void *si_upper;
-				} __addr_bnd;
-				unsigned si_pkey;
-			} __first;
-		} __sigfault;
-		struct {
-			long si_band;
-			int si_fd;
-		} __sigpoll;
-		struct {
-			void *si_call_addr;
-			int si_syscall;
-			unsigned si_arch;
-		} __sigsys;
-	} __si_fields;
+typedef struct __siginfo {
+        int     si_signo;               /* signal number */
+        int     si_errno;               /* errno association */
+        /*
+         * Cause of signal, one of the SI_ macros or signal-specific
+         * values, i.e. one of the FPE_... values for SIGFPE.  This
+         * value is equivalent to the second argument to an old-style
+         * FreeBSD signal handler.
+         */
+        int     si_code;                /* signal code */
+        pid_t si_pid;                   /* sending process */
+        uid_t si_uid;                   /* sender's ruid */
+        int     si_status;              /* exit value */
+        void    *si_addr;               /* faulting instruction */
+        union sigval si_value;          /* signal value */
+        union   {
+                struct {
+                        int     _trapno;/* machine specific trap code */
+                } _fault;
+                struct {
+                        int     _timerid;
+                        int     _overrun;
+                } _timer;
+                struct {
+                        int     _mqd;
+                } _mesgq;
+                struct {
+                        long    _band;          /* band event for SIGPOLL */
+                } _poll;                        /* was this ever used ? */
+                struct {
+                        long    __spare1__;
+                        int     __spare2__[7];
+                } __spare__;
+        } _reason;
 } siginfo_t;
-#define si_pid     __si_fields.__si_common.__first.__piduid.si_pid
-#define si_uid     __si_fields.__si_common.__first.__piduid.si_uid
-#define si_status  __si_fields.__si_common.__second.__sigchld.si_status
-#define si_utime   __si_fields.__si_common.__second.__sigchld.si_utime
-#define si_stime   __si_fields.__si_common.__second.__sigchld.si_stime
-#define si_value   __si_fields.__si_common.__second.si_value
-#define si_addr    __si_fields.__sigfault.si_addr
-#define si_addr_lsb __si_fields.__sigfault.si_addr_lsb
-#define si_lower   __si_fields.__sigfault.__first.__addr_bnd.si_lower
-#define si_upper   __si_fields.__sigfault.__first.__addr_bnd.si_upper
-#define si_pkey    __si_fields.__sigfault.__first.si_pkey
-#define si_band    __si_fields.__sigpoll.si_band
-#define si_fd      __si_fields.__sigpoll.si_fd
-#define si_timerid __si_fields.__si_common.__first.__timer.si_timerid
-#define si_overrun __si_fields.__si_common.__first.__timer.si_overrun
-#define si_ptr     si_value.sival_ptr
-#define si_int     si_value.sival_int
-#define si_call_addr __si_fields.__sigsys.si_call_addr
-#define si_syscall __si_fields.__sigsys.si_syscall
-#define si_arch    __si_fields.__sigsys.si_arch
 
 struct sigaction {
 	union {
 		void (*sa_handler)(int);
-		void (*sa_sigaction)(int, siginfo_t *, void *);
+		void (*__sa_sigaction)(int, struct __siginfo *, void *);
 	} __sa_handler;
-	sigset_t sa_mask;
 	int sa_flags;
-	void (*sa_restorer)(void);
+	sigset_t sa_mask;
 };
 #define sa_handler   __sa_handler.sa_handler
 #define sa_sigaction __sa_handler.sa_sigaction
 
 struct sigevent {
-	union sigval sigev_value;
-	int sigev_signo;
-	int sigev_notify;
-	void (*sigev_notify_function)(union sigval);
-	pthread_attr_t *sigev_notify_attributes;
-	char __pad[56-3*sizeof(long)];
+	int     sigev_notify;           /* Notification type */
+	int     sigev_signo;            /* Signal number */
+	union sigval sigev_value;       /* Signal value */
+	union {
+		int       _threadid;
+		struct {
+		        void (*_function)(union sigval);
+		        void *_attribute; /* pthread_attr_t * */
+		} _sigev_thread;
+		long __spare__[8];
+	} _sigev_un;
 };
 
 #define SIGEV_SIGNAL 0

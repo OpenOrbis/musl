@@ -18,14 +18,22 @@ static void *start(void *p)
 	char buf[32];
 	ssize_t n;
 	int s = args->sock;
+#ifdef PS4
+#warning "sigev_notify_function not supported on PS4"
+#else
 	void (*func)(union sigval) = args->sev->sigev_notify_function;
+#endif
 	union sigval val = args->sev->sigev_value;
 
 	pthread_barrier_wait(&args->barrier);
 	n = recv(s, buf, sizeof(buf), MSG_NOSIGNAL|MSG_WAITALL);
 	close(s);
+#ifdef PS4
+#warning "sigev_notify_function not supported on PS4"
+#else
 	if (n==sizeof buf && buf[sizeof buf - 1] == 1)
 		func(val);
+#endif
 	return 0;
 }
 
@@ -61,8 +69,14 @@ int mq_notify(mqd_t mqd, const struct sigevent *sev)
 	if (s < 0) return -1;
 	args.sock = s;
 
+#ifdef PS4
+#warning "sigev_notify_function not supported on PS4"
+#else
 	if (sev->sigev_notify_attributes) attr = *sev->sigev_notify_attributes;
-	else pthread_attr_init(&attr);
+
+	else
+#endif
+		pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	pthread_barrier_init(&args.barrier, 0, 2);
 

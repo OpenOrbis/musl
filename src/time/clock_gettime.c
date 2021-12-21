@@ -54,6 +54,7 @@ static void *volatile vdso_func = (void *)cgt_init;
 
 #endif
 
+#ifndef PS4
 int __clock_gettime(clockid_t clk, struct timespec *ts)
 {
 	int r;
@@ -109,3 +110,4 @@ int __clock_gettime(clockid_t clk, struct timespec *ts)
 }
 
 weak_alias(__clock_gettime, clock_gettime);
+#endif

@@ -3,23 +3,30 @@
 #include <errno.h>
 #include "syscall.h"
 
-#ifndef PS4 //XXX: SOCK_CLOEXEC and SOCK_NONBLOCK
+#ifdef PS4
+
+int __sys_socketex(const char* name, int domain, int type, int protocol);
+#define _socket(domain, type, protocol) __sys_socketex("", domain, type, protocol)
+
+#else
+
+#define _socket(domain, type, protocol) __syscall_ret(__socketcall(socket, domain, type, protocol, 0, 0, 0))
+
+#endif
 
 int socket(int domain, int type, int protocol)
 {
-	int s = __socketcall(socket, domain, type, protocol, 0, 0, 0);
-	if ((s==-EINVAL || s==-EPROTONOSUPPORT)
+	int s = _socket(domain, type, protocol);
+	if (s < 0 && (errno==EINVAL || errno==EPROTONOSUPPORT)
 	    && (type&(SOCK_CLOEXEC|SOCK_NONBLOCK))) {
-		s = __socketcall(socket, domain,
+		s = _socket(domain,
 			type & ~(SOCK_CLOEXEC|SOCK_NONBLOCK),
-			protocol, 0, 0, 0);
-		if (s < 0) return __syscall_ret(s);
+			protocol);
+		if (s < 0) return s;
 		if (type & SOCK_CLOEXEC)
-			__syscall(SYS_fcntl, s, F_SETFD, FD_CLOEXEC);
+			fcntl(s, F_SETFD, FD_CLOEXEC);
 		if (type & SOCK_NONBLOCK)
-			__syscall(SYS_fcntl, s, F_SETFL, O_NONBLOCK);
+			fcntl(s, F_SETFL, O_NONBLOCK);
 	}
-	return __syscall_ret(s);
+	return s;
 }
-
-#endif

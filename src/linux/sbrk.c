@@ -11,6 +11,6 @@ void *sbrk(intptr_t inc)
 	return (void *)__syscall(SYS_brk, 0);
 #else
 	errno = ENOSYS;
-	return -1;
+	return (void*)-1;
 #endif
 }

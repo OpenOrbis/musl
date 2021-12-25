@@ -12,7 +12,7 @@ mqd_t mq_open(const char *name, int flags, ...)
 	if (flags & O_CREAT) {
 		va_list ap;
 		va_start(ap, flags);
-		mode = va_arg(ap, mode_t);
+		mode = va_arg(ap, int); //mode_t
 		attr = va_arg(ap, struct mq_attr *);
 		va_end(ap);
 	}

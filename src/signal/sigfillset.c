@@ -3,7 +3,7 @@
 
 int sigfillset(sigset_t *set)
 {
-#if ULONG_MAX == 0xffffffff
+#if ULONG_MAX == 0xffffffff || defined(PS4)
 	set->__bits[0] = 0x7ffffffful;
 	set->__bits[1] = 0xfffffffcul;
 	if (_NSIG > 65) {

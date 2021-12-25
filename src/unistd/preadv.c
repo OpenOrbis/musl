@@ -19,7 +19,7 @@ ssize_t preadv(int fd, const struct iovec *iov, int count, off_t ofs);
 
 ssize_t preadv64(int fd, const struct iovec *iov, int count, off_t ofs)
 {
-	return pread(fd, iov, count, ofs);
+	return preadv(fd, iov, count, ofs);
 }
 
 #endif

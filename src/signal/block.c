@@ -34,12 +34,12 @@ static const unsigned long app_mask[] = {
 
 void __block_all_sigs(void *set)
 {
-	sigprocmask(SIG_BLOCK, &all_mask, set);
+	sigprocmask(SIG_BLOCK, (const sigset_t*)&all_mask, set);
 }
 
 void __block_app_sigs(void *set)
 {
-	sigprocmask(SIG_BLOCK, &app_mask, set);
+	sigprocmask(SIG_BLOCK, (const sigset_t*)&app_mask, set);
 }
 
 void __restore_sigs(void *set)

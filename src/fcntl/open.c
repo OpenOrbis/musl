@@ -13,7 +13,7 @@ int open(const char *filename, int flags, ...)
         ) {
 		va_list ap;
 		va_start(ap, flags);
-		mode = va_arg(ap, mode_t);
+		mode = va_arg(ap, int); //mode_t
 		va_end(ap);
 	}
 

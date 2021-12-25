@@ -61,20 +61,26 @@ E(EMLINK,       "Too many links")
 E(ENOLCK,       "No locks available")
 
 E(EDEADLK,      "Resource deadlock would occur")
+#ifndef PS4
 E(ENOTRECOVERABLE, "State not recoverable")
 E(EOWNERDEAD,   "Previous owner died")
+#endif
 E(ECANCELED,    "Operation canceled")
 E(ENOSYS,       "Function not implemented")
 E(ENOMSG,       "No message of desired type")
 E(EIDRM,        "Identifier removed")
+#ifndef PS4
 E(ENOSTR,       "Device not a stream")
 E(ENODATA,      "No data available")
 E(ETIME,        "Device timeout")
 E(ENOSR,        "Out of streams resources")
+#endif
 E(ENOLINK,      "Link has been severed")
 E(EPROTO,       "Protocol error")
 E(EBADMSG,      "Bad message")
+#ifndef PS4
 E(EBADFD,       "File descriptor in bad state")
+#endif
 E(ENOTSOCK,     "Not a socket")
 E(EDESTADDRREQ, "Destination address required")
 E(EMSGSIZE,     "Message too large")
@@ -97,8 +103,12 @@ E(ESHUTDOWN,    "Cannot send after socket shutdown")
 E(EALREADY,     "Operation already in progress")
 E(EINPROGRESS,  "Operation in progress")
 E(ESTALE,       "Stale file handle")
+#ifndef PS4
 E(EREMOTEIO,    "Remote I/O error")
+#endif
 E(EDQUOT,       "Quota exceeded")
+#ifndef PS4
 E(ENOMEDIUM,    "No medium found")
 E(EMEDIUMTYPE,  "Wrong medium type")
+#endif
 E(EMULTIHOP,    "Multihop attempted")

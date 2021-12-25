@@ -1,4 +1,4 @@
-__asm__(
+/*__asm__(
 ".text \n"
 ".global " START " \n"
 START ": \n"
@@ -9,6 +9,13 @@ START ": \n"
 "	lea _DYNAMIC(%rip),%rsi \n"
 "	andq $-16,%rsp \n"
 "	call " START "_ps4_c \n"
+);*/
+
+__asm__(
+".text \n"
+".global " START " \n"
+START ": \n"
+"   jmp " START "_ps4_c \n"
 );
 
 /*__asm__(

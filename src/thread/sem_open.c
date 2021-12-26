@@ -165,7 +165,7 @@ fail:
 	int ksem_open(void** id, const char* path, int oflag, mode_t mode, unsigned int value);
 	va_list l;
 	va_start(l, flags);
-	mode_t mode = va_arg(l, mode_t);
+	mode_t mode = va_arg(l, int); //mode_t
 	unsigned int value = va_arg(l, unsigned int);
 	va_end(l);
 	int rv = ksem_open(&id, name, flags, mode, value);

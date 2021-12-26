@@ -23,7 +23,7 @@ _Noreturn void abort(void)
 		&(struct sigaction){.sa_handler = SIG_DFL}, 0);
 	raise(SIGABRT);
 	sigprocmask(SIG_UNBLOCK,
-		&(long[_NSIG/(8*sizeof(long))]){1UL<<(SIGABRT-1)}, 0);
+		(const sigset_t*)&(long[_NSIG/(8*sizeof(long))]){1UL<<(SIGABRT-1)}, 0);
 
 	/* Beyond this point should be unreachable. */
 	a_crash();

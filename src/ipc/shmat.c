@@ -7,7 +7,7 @@
 void* shmat(int id, const void* addr, int flag)
 {
 	errno = ENOSYS;
-	return -1;
+	return (void*)-1;
 }
 #else
 

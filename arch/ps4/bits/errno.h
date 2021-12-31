@@ -124,3 +124,19 @@
 #define	EMULTIHOP	90		/* Multihop attempted */
 #define	ENOLINK		91		/* Link has been severed */
 #define	EPROTO		92		/* Protocol error */
+
+#ifndef _POSIX_SOURCE
+#define	ENOTCAPABLE	93		/* Capabilities insufficient */
+#define	ECAPMODE	94		/* Not permitted in capability mode */
+
+/* These 3 are not yet present in FreeBSD version 9, but declaring them won't hurt, and will make for less patches in consumers. */
+#define	ENOTRECOVERABLE	95		/* State not recoverable */
+#define	EOWNERDEAD	96		/* Previous owner died */
+#define	EINTEGRITY	97		/* Integrity check failed */
+
+#endif /* _POSIX_SOURCE */
+
+#ifndef _POSIX_SOURCE
+#define	ELAST		97		/* Must be equal largest errno */
+#endif /* _POSIX_SOURCE */
+

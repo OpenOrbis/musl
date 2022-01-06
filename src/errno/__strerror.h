@@ -61,10 +61,8 @@ E(EMLINK,       "Too many links")
 E(ENOLCK,       "No locks available")
 
 E(EDEADLK,      "Resource deadlock would occur")
-#ifndef PS4
 E(ENOTRECOVERABLE, "State not recoverable")
 E(EOWNERDEAD,   "Previous owner died")
-#endif
 E(ECANCELED,    "Operation canceled")
 E(ENOSYS,       "Function not implemented")
 E(ENOMSG,       "No message of desired type")

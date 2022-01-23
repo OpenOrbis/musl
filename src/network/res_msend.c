@@ -15,7 +15,7 @@
 #include "lookup.h"
 
 #if PS4
-#include <fnctl.h>
+#include <fcntl.h>
 #endif
 
 static void cleanup(void *p)

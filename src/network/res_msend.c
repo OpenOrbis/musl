@@ -48,6 +48,9 @@ int __res_msend_rc(int nqueries, const unsigned char *const *queries,
 	int cs;
 	struct pollfd pfd;
 	unsigned long t0, t1, t2;
+#if PS4
+	int flags;
+#endif
 
 	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &cs);
 
@@ -72,11 +75,27 @@ int __res_msend_rc(int nqueries, const unsigned char *const *queries,
 
 	/* Get local address and open/bind a socket */
 	sa.sin.sin_family = family;
+#if PS4
+	fd = socket(family, SOCK_DGRAM, 0);
+	flags = fcntl(fd, F_GETFL, 0);
+	if(fcntl(fd, F_SETFL, flags | O_CLOEXEC | O_NONBLOCK) < 0) {
+		return -1;
+	}
+#else
 	fd = socket(family, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0);
+#endif
 
 	/* Handle case where system lacks IPv6 support */
 	if (fd < 0 && family == AF_INET6 && errno == EAFNOSUPPORT) {
+#if PS4
+		fd = socket(AF_INET, SOCK_DGRAM, 0);
+		flags = fcntl(fd, F_GETFL, 0);
+		if(fcntl(fd, F_SETFL, flags | O_CLOEXEC | O_NONBLOCK) < 0) {
+			return -1;
+		}
+#else
 		fd = socket(AF_INET, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0);
+#endif
 		family = AF_INET;
 	}
 	if (fd < 0 || bind(fd, (void *)&sa, sl) < 0) {

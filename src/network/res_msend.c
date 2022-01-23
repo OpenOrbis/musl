@@ -14,6 +14,10 @@
 #include "syscall.h"
 #include "lookup.h"
 
+#if PS4
+#include <fnctl.h>
+#endif
+
 static void cleanup(void *p)
 {
 	int errno1 = errno;

@@ -5,6 +5,10 @@
 int timespec_get(struct timespec * ts, int base)
 {
 	if (base != TIME_UTC) return 0;
+#ifndef PS4
 	int ret = __clock_gettime(CLOCK_REALTIME, ts);
+#else
+	int ret = clock_gettime(CLOCK_REALTIME, ts);
+#endif
 	return ret < 0 ? 0 : base;
 }

@@ -193,50 +193,53 @@ struct linger {
 #define AF_MAX          PF_MAX
 
 #ifndef SO_DEBUG
-#define SO_DEBUG        1
-#define SO_REUSEADDR    2
-#define SO_TYPE         3
-#define SO_ERROR        4
-#define SO_DONTROUTE    5
-#define SO_BROADCAST    6
-#define SO_SNDBUF       7
-#define SO_RCVBUF       8
-#define SO_KEEPALIVE    9
-#define SO_OOBINLINE    10
-#define SO_NO_CHECK     11
-#define SO_PRIORITY     12
-#define SO_LINGER       13
-#define SO_BSDCOMPAT    14
-#define SO_REUSEPORT    15
-#define SO_PASSCRED     16
-#define SO_PEERCRED     17
-#define SO_RCVLOWAT     18
-#define SO_SNDLOWAT     19
-#define SO_ACCEPTCONN   30
-#define SO_PEERSEC      31
-#define SO_SNDBUFFORCE  32
-#define SO_RCVBUFFORCE  33
-#define SO_PROTOCOL     38
-#define SO_DOMAIN       39
+#define SO_DEBUG        0x0001
+#define SO_REUSEADDR    0x0004
+#define SO_TYPE         0x1008
+#define SO_ERROR        0x1007
+#define SO_DONTROUTE    0x0010
+#define SO_BROADCAST    0x0020
+#if __BSD_VISIBLE
+#define	SO_USELOOPBACK	0x0040		/* bypass hardware when possible */
+#endif
+#define SO_SNDBUF       0x1001
+#define SO_RCVBUF       0x1002
+#define SO_KEEPALIVE    0x0008
+#define SO_OOBINLINE    0x0100
+//#define SO_NO_CHECK     11		/* does not exist on FreeBSD */
+//#define SO_PRIORITY     12		/* does not exist on FreeBSD */
+#define SO_LINGER       0x0080
+//#define SO_BSDCOMPAT    14		/* does not exist on FreeBSD */
+#define SO_REUSEPORT    0x0200
+//#define SO_PASSCRED     16		/* does not exist on FreeBSD */
+//#define SO_PEERCRED     17		/* does not exist on FreeBSD */
+#define SO_RCVLOWAT     0x1004
+#define SO_SNDLOWAT     0x1003
+#define SO_ACCEPTCONN   0x0002
+//#define SO_PEERSEC      31		/* does not exist on FreeBSD */
+//#define SO_SNDBUFFORCE  32		/* does not exist on FreeBSD */
+//#define SO_RCVBUFFORCE  33		/* does not exist on FreeBSD */
+//#define SO_PROTOCOL     38		/* does not exist on FreeBSD */
+//#define SO_DOMAIN       39		/* does not exist on FreeBSD */
 #endif
 
 #ifndef SO_RCVTIMEO
 #if __LONG_MAX == 0x7fffffff
-#define SO_RCVTIMEO     66
-#define SO_SNDTIMEO     67
+#define SO_RCVTIMEO     0x1006
+#define SO_SNDTIMEO     0x1005
 #else
-#define SO_RCVTIMEO     20
-#define SO_SNDTIMEO     21
+#define SO_RCVTIMEO     0x1006
+#define SO_SNDTIMEO     0x1005
 #endif
 #endif
 
 #ifndef SO_TIMESTAMP
 #if __LONG_MAX == 0x7fffffff
-#define SO_TIMESTAMP    63
+#define SO_TIMESTAMP    0x0400
 #define SO_TIMESTAMPNS  64
 #define SO_TIMESTAMPING 65
 #else
-#define SO_TIMESTAMP    29
+#define SO_TIMESTAMP    0x0400
 #define SO_TIMESTAMPNS  35
 #define SO_TIMESTAMPING 37
 #endif

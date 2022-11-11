@@ -34,6 +34,7 @@ struct in6_addr {
 #define s6_addr32 __in6_union.__s6_addr32
 
 struct sockaddr_in6 {
+	uint8_t         sin6_len;
 	sa_family_t     sin6_family;
 	in_port_t       sin6_port;
 	uint32_t        sin6_flowinfo;

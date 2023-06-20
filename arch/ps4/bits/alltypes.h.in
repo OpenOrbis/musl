@@ -19,7 +19,7 @@ TYPEDEF double double_t;
 
 TYPEDEF unsigned int ino_t;
 TYPEDEF unsigned int dev_t;
-TYPEDEF unsigned short mode_t;
+TYPEDEF unsigned int mode_t;
 TYPEDEF unsigned short nlink_t;
 TYPEDEF unsigned int blksize_t;
 

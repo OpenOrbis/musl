@@ -1,39 +1,63 @@
-name: Musl Test Build
+name: Musl Build
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [ push, pull_request ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
 
-    - name: Set up environment
+    - name: Set environment variables
       run: |
-        mkdir ps4
+        ver="12.0"
+        echo llvm_ver=$ver >> $GITHUB_ENV
+        echo "llvm_path=$RUNNER_TOOL_CACHE/llvm-$ver" >> $GITHUB_ENV
 
-    - name: Configure
-      run: ./configure --target=x86_64-scei-ps4 --disable-shared CC="clang" CFLAGS="-fPIC -DPS4 -D_LIBUNWIND_IS_BAREMETAL=1" --prefix=./ps4
+    - name: Checkout musl
+      uses: actions/checkout@v3
+
+    - name: Cache LLVM and Clang (${{ env.llvm_ver }})
+      id: cache-llvm
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.llvm_path }}
+        key: llvm-${{ env.llvm_ver }}
+
+    - name: Install LLVM and Clang (${{ env.llvm_ver }})
+      uses: KyleMayes/install-llvm-action@v1
+      with:
+        version: ${{ env.llvm_ver }}
+        directory: ${{ env.llvm_path }}
+        cached: ${{ steps.cache-llvm.outputs.cache-hit }}
+
+    - name: Configure musl
+      run: |
+       mkdir ps4
+       clang -v
+       ./configure --target=x86_64-scei-ps4 --disable-shared CC="clang" \
+       CFLAGS="-fPIC -DPS4 -D_LIBUNWIND_IS_BAREMETAL=1" \
+       --prefix=./ps4
 
     - name: Build
       run: make
 
     - name: Install
       run: make install
-    
+
     - name: Create tarball
-      run: |
-        cd ps4
-        tar -cvzf musl.tar.gz lib/* include/*
+      working-directory: ps4
+      run: tar -cvzf musl.tar.gz lib/* include/*
 
     - name: Upload musl
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: musl.tar.gz
         path: ps4/musl.tar.gz
+
+    - name: Upload musl zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: musl
+        path: |
+          lib/*
+          include/*

@@ -19,7 +19,7 @@ extern "C" {
 
 typedef struct __dirstream DIR;
 
-#define d_fileno d_ino
+#define d_ino d_fileno
 
 int            closedir(DIR *);
 DIR           *fdopendir(int);

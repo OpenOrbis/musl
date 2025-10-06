@@ -14,7 +14,7 @@ jobs:
         echo "llvm_path=$RUNNER_TOOL_CACHE/llvm-$ver" >> $GITHUB_ENV
 
     - name: Checkout musl
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
 
     - name: Cache LLVM and Clang (${{ env.llvm_ver }})
       id: cache-llvm
@@ -49,13 +49,13 @@ jobs:
       run: tar -cvzf musl.tar.gz lib/* include/*
 
     - name: Upload musl
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: musl.tar.gz
         path: ps4/musl.tar.gz
 
     - name: Upload musl zip
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: musl
         path: |
